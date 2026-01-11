@@ -1,26 +1,32 @@
 ---
 ---
 <div class="contact-form-container">
-  <h2>أرسل لنا رسالة</h2>
-  <p>املأ النموذج أدناه وسيقوم فريقنا بالرد عليك في أقرب وقت ممكن.</p>
-  <form class="contact-form">
+  <h2>سجل اهتمامك</h2>
+  <p>سواء كان لديك استفسار، أو ترغب في استكشاف فرصة استثمارية، أو تفكر في شراء وحدة، فريقنا جاهز لمساعدتك. املأ النموذج أدناه ودعنا نبدأ الحديث.</p>
+  <form action="https://formspree.io/f/your_form_id" method="POST" class="contact-form">
     <div class="form-group">
-      <label for="name">الاسم</label>
+      <label for="name">الاسم الكامل</label>
       <input type="text" id="name" name="name" required>
     </div>
     <div class="form-group">
-      <label for="email">البريد الإلكتروني</label>
-      <input type="email" id="email" name="email" required>
+      <label for="phone">رقم الهاتف</label>
+      <input type="tel" id="phone" name="phone" required>
     </div>
     <div class="form-group">
-      <label for="subject">الموضوع</label>
-      <input type="text" id="subject" name="subject" required>
+      <label for="requestType">نوع الطلب</label>
+      <select id="requestType" name="requestType" required>
+        <option value="" disabled selected>-- اختر نوع الطلب --</option>
+        <option value="شراء وحدة">شراء وحدة</option>
+        <option value="استثمار">استثمار</option>
+        <option value="استفسار عام">استفسار عام</option>
+        <option value="اخرى">أخرى</option>
+      </select>
     </div>
     <div class="form-group">
-      <label for="message">الرسالة</label>
-      <textarea id="message" name="message" rows="5" required></textarea>
+      <label for="message">رسالتك (اختياري)</label>
+      <textarea id="message" name="message" rows="4"></textarea>
     </div>
-    <button type="submit" class="submit-btn">إرسال</button>
+    <button type="submit" class="submit-btn">إرسال الاهتمام</button>
   </form>
 </div>
 
@@ -32,13 +38,13 @@
     border-radius: 15px;
     padding: 3rem;
     max-width: 800px;
-    margin: 4rem auto 0;
-    text-align: right; /* Right-align text for RTL */
+    margin: 5rem auto;
+    text-align: right;
   }
 
   .contact-form-container h2 {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 900;
     color: #fff;
     margin-bottom: 1rem;
     text-align: center;
@@ -46,8 +52,12 @@
     
   .contact-form-container p {
       color: #ccc;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
       text-align: center;
+      line-height: 1.8;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
   }
 
   .contact-form .form-group {
@@ -58,27 +68,50 @@
     display: block;
     font-size: 1rem;
     color: #fff;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
   }
 
   .contact-form input,
-  .contact-form textarea {
+  .contact-form textarea,
+  .contact-form select {
     width: 100%;
-    padding: 0.8rem 1rem;
+    padding: 1rem;
     font-size: 1rem;
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: #fff;
-    box-sizing: border-box; /* Added for consistent padding */
+    box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
   }
 
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder {
+    color: #999;
+  }
+
   .contact-form input:focus,
-  .contact-form textarea:focus {
+  .contact-form textarea:focus,
+  .contact-form select:focus {
     outline: none;
     border-color: #ffd700;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  }
+  
+  .contact-form select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9%200-5-1.8-9.2-5.4-12.7z%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+    background-size: .8em auto;
+    padding-right: 1rem;
+    padding-left: 2.5rem; 
+  }
+
+  .contact-form select option {
+    background: #333;
+    color: #fff;
   }
 
   .contact-form textarea {
@@ -92,17 +125,16 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #111;
-    background-color: #ffd700;
+    background: linear-gradient(90deg, #ffd700, #ffc700);
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   .submit-btn:hover {
-    background-color: #ffc700;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 25px rgba(255, 215, 0, 0.4);
   }
 </style>
