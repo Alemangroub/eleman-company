@@ -65,13 +65,14 @@ import Search from './Search.astro';
 
 <style>
    .site-header {
-    background: transparent;
-    padding: 1rem 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+        background-color: #fff;
+        padding: 1rem 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
     }
 
     .container {
@@ -138,35 +139,25 @@ import Search from './Search.astro';
         animation-delay: 0.3s;
     }
 
-    .main-nav :global(a),
-    .header-actions > *,
-    .hamburger-menu {
+    /* Shared animation for header elements */
+    .main-nav :global(a), .header-actions > *, .hamburger-menu {
         opacity: 0;
         animation: fadeInDown 0.5s forwards;
         text-shadow: none;
     }
 
+    /* Staggered animation delays */
     .main-nav :global(a):nth-child(1) { animation-delay: 0.6s; }
     .main-nav :global(a):nth-child(2) { animation-delay: 0.7s; }
     .main-nav :global(a):nth-child(3) { animation-delay: 0.8s; }
     .main-nav :global(a):nth-child(4) { animation-delay: 0.9s; }
-    
     .header-actions > :first-child { animation-delay: 1s; }
     .header-actions > :last-child { animation-delay: 1.1s; }
-
-    .hamburger-menu {
-        animation-delay: 1.2s;
-    }
+    .hamburger-menu { animation-delay: 1.2s; }
     
     @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .nav-and-actions {
@@ -180,19 +171,48 @@ import Search from './Search.astro';
         gap: 2.5rem;
     }
 
+    /* Styling for nav links text */
+    .main-nav :global(a) {
+        font-weight: 700;
+        background: linear-gradient(90deg, var(--accent), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        transition: filter 0.3s ease;
+        padding-bottom: 5px; /* space for the underline */
+        position: relative;
+    }
+
+    .main-nav :global(a:hover) {
+        filter: brightness(1.2);
+    }
+
+    /* Active link underline */
+    .main-nav :global(a.is-active::after) {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), var(--secondary));
+    }
+
     .header-actions {
         display: flex;
         align-items: center;
         gap: 1.5rem;
     }
 
-    .whatsapp-icon svg {
-        stroke: black;
-        transition: transform 0.3s;
+    /* Styling for icons */
+    .whatsapp-icon svg, .header-actions :global(.search-button svg) {
+        stroke: var(--accent);
+        transition: all 0.3s ease;
     }
 
-    .whatsapp-icon:hover svg {
-        transform: scale(1.1);
+    .whatsapp-icon:hover svg, .header-actions :global(.search-button:hover svg) {
+        stroke: var(--secondary);
+        transform: scale(1.15);
     }
     
     .hamburger-menu {
@@ -209,50 +229,29 @@ import Search from './Search.astro';
         display: none;
     }
 
-    .hamburger-menu[aria-expanded="true"] .hamburger-icon {
-        display: none;
-    }
-    .hamburger-menu[aria-expanded="true"] .close-icon {
-        display: block;
-    }
-     .hamburger-menu[aria-expanded="true"] {
-        color: rgb(var(--text-light));
-     }
+    .hamburger-menu[aria-expanded="true"] .hamburger-icon { display: none; }
+    .hamburger-menu[aria-expanded="true"] .close-icon { display: block; }
+    .hamburger-menu[aria-expanded="true"] { color: rgb(var(--text-light)); }
 
     @media (max-width: 1024px) {
-        .logo-container {
-            width: 180px;
-        }
+        .logo-container { width: 180px; }
         .logo-text .eleman { font-size: 1.5rem; }
         .logo-text .company { font-size: 1.2rem; }
         .logo-text .tagline { font-size: 0.5rem; }
-        .main-nav {
-            gap: 1.5rem;
-        }
+        .main-nav { gap: 1.5rem; }
     }
 
     @media (max-width: 768px) {
-        .header-content {
-            justify-content: flex-end; 
-        }
-        .logo-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: 15px; 
-        }
-        .hamburger-menu {
-            display: block;
-        }
+        .header-content { justify-content: flex-end; }
+        .logo-container { position: absolute; left: 50%; transform: translateX(-50%); top: 15px; }
+        .hamburger-menu { display: block; }
 
         .nav-and-actions {
             display: none;
             flex-direction: column;
-            align-items: center;
-            /* Changed from justify-content: center */
             justify-content: flex-start;
-            padding-top: 25vh; /* Added padding to push content down */
-            gap: 3rem; /* Increased gap for better spacing */
+            padding-top: 25vh;
+            gap: 3rem;
             position: fixed;
             top: 0;
             left: 0;
@@ -263,57 +262,23 @@ import Search from './Search.astro';
             -webkit-backdrop-filter: blur(10px);
             transform: translateX(100%);
             transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow-y: auto; /* Add scroll for smaller screens */
+            overflow-y: auto;
         }
         
-        .nav-and-actions.is-active {
-            display: flex;
-            transform: translateX(0);
-        }
+        .nav-and-actions.is-active { display: flex; transform: translateX(0); }
+        .main-nav { flex-direction: column; gap: 2rem; text-align: center; }
+        .header-actions { flex-direction: column; gap: 2rem; }
+        .header-actions .whatsapp-icon svg { stroke: rgb(var(--text-light)); width: 32px; height: 32px; }
+        .nav-and-actions.is-active :global(.search-button svg) { stroke: rgb(var(--text-light)); }
 
-        .main-nav {
-            flex-direction: column;
-            gap: 2rem;
-            text-align: center;
-        }
-        
-        .header-actions {
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .header-actions .whatsapp-icon svg {
-            stroke: rgb(var(--text-light));
-            width: 32px;
-            height: 32px;
-        }
-        
-        .nav-and-actions.is-active :global(.search-input) {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
+        .nav-and-actions.is-active :global(a) {
+            font-size: 1.8rem;
             color: rgb(var(--text-light));
-            width: 80%;
-            max-width: 300px;
+            background: none;
+            -webkit-background-clip: initial;
+            background-clip: initial;
         }
 
-        .nav-and-actions.is-active :global(.search-input::placeholder) {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .nav-and-actions.is-active :global(.search-button svg) {
-            stroke: rgb(var(--text-light));
-        }
-
-        .nav-and-actions.is-active :global(.search-input:focus) {
-            width: 85%;
-            max-width: 320px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-color: rgb(var(--accent));
-            box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
-        }
-
-        body.no-scroll {
-            overflow: hidden;
-        }
+        body.no-scroll { overflow: hidden; }
     }
 </style>

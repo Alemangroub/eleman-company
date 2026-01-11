@@ -14,21 +14,26 @@ const statusText = project.status === 'delivered' ? 'تم التسليم' : 'ت�
 const statusClass = project.status === 'delivered' ? 'status-delivered' : 'status-under-construction';
 ---
 
-<a href={project.slug} class="project-card">
-  <div class="card-image">
-    <img src={project.image} alt={`صورة مشروع ${project.name}`} loading="lazy" width="400" height="300">
-    <div class={`status-badge ${statusClass}`}>{statusText}</div>
+<div class="project-card">
+  <a href={project.slug} class="card-link-wrapper">
+    <div class="card-image">
+      <img src={project.image} alt={`صورة مشروع ${project.name}`} loading="lazy" width="400" height="300">
+      <div class={`status-badge ${statusClass}`}>{statusText}</div>
+    </div>
+    <div class="card-content">
+      <h3 class="card-title">{project.name}</h3>
+      <p class="card-description">{project.description}</p>
+    </div>
+  </a>
+  <div class="card-footer">
+    <a href={project.slug} class="btn-details">عرض التفاصيل &rarr;</a>
   </div>
-  <div class="card-content">
-    <h3 class="card-title">{project.name}</h3>
-    <p class="card-description">{project.description}</p>
-    <span class="card-link">عرض التفاصيل &rarr;</span>
-  </div>
-</a>
+</div>
 
 <style>
   .project-card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     border-radius: 15px;
@@ -43,6 +48,12 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
   .project-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+
+  .card-link-wrapper {
+      text-decoration: none;
+      color: inherit;
+      display: block;
   }
 
   .card-image {
@@ -87,13 +98,18 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
 
   .card-content {
     padding: 1.5rem;
+    flex-grow: 1;
   }
 
   .card-title {
-    font-size: 1.4rem;
+    font-size: 1.6rem; /* Increased font size */
     font-weight: 700;
     margin: 0 0 0.75rem;
-    color: rgb(var(--primary));
+    display: inline-block; /* Important for gradient to work */
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .card-description {
@@ -104,16 +120,28 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
     margin: 0 0 1rem;
   }
 
-  .card-link {
-    display: inline-block;
-    font-weight: bold;
-    color: rgb(var(--primary));
-    opacity: 0.9;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+  .card-footer {
+      padding: 0 1.5rem 1.5rem;
+      text-align: right;
   }
 
-  .project-card:hover .card-link {
-    transform: translateX(5px);
-    opacity: 1;
+  .btn-details {
+    display: inline-block;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
   }
+
+  .btn-details:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.3);
+  }
+
 </style>

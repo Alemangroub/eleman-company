@@ -39,7 +39,12 @@ const {
 
   .section-title {
     font-size: 2.8rem;
-    color: var(--primary);
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
 
   .see-all-link {
@@ -63,7 +68,7 @@ const {
   @media (max-width: 768px) {
     .section-header {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-end; /* Align to the right */
         gap: 0.5rem;
         margin-bottom: 2rem;
     }

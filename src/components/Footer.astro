@@ -54,7 +54,7 @@ const today = new Date();
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; {today.getFullYear()} شركة الايمان للتطوير العقاري. جميع الحقوق محفوظة.</p>
+      <p>&copy; {today.getFullYear()} <span class="company-name-gradient">شركة الايمان للتطوير العقاري</span>. جميع الحقوق محفوظة.</p>
     </div>
   </div>
 </footer>
@@ -68,9 +68,8 @@ const today = new Date();
     --text-color: var(--text-muted, #718096);
     --link-color: var(--text-dark, #2d3748);
     --link-hover-color: var(--accent, #d8648c);
-    --underline-color: var(--accent, #d8648c); /* Updated color */
-    --button-bg-color: var(--accent, #d8648c); /* Updated color */
-    --button-text-color: #fff; /* Changed for better contrast */
+    --underline-color: var(--accent, #d8648c);
+    --button-text-color: #fff;
   }
 
   .site-footer {
@@ -84,7 +83,7 @@ const today = new Date();
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
-    align-items: stretch; /* Stretch cards to be equal height */
+    align-items: stretch;
   }
 
   .footer-card {
@@ -98,10 +97,14 @@ const today = new Date();
 
   .footer-title {
     font-size: 1.5rem;
-    color: var(--title-color);
-    margin-bottom: 2rem; /* Increased margin */
+    margin-bottom: 2rem;
     position: relative;
     display: inline-block;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .footer-title::after {
@@ -111,7 +114,7 @@ const today = new Date();
     bottom: -10px;
     width: 50px;
     height: 3px;
-    background-color: var(--underline-color);
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
   }
 
   .footer-card p {
@@ -121,7 +124,6 @@ const today = new Date();
     flex-grow: 1;
   }
 
-  /* Links List */
   .footer-links {
     list-style: none;
     padding: 0;
@@ -144,7 +146,6 @@ const today = new Date();
     color: var(--link-hover-color);
   }
 
-  /* Contact List */
   .contact-list {
     list-style: none;
     padding: 0;
@@ -152,7 +153,7 @@ const today = new Date();
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Space between items */
+    gap: 1.5rem;
   }
 
   .contact-list li {
@@ -181,21 +182,18 @@ const today = new Date();
     flex-shrink: 0;
   }
 
-  .contact-list .icon.location {
+  .contact-list .icon.location, .contact-list .icon.email {
     background-color: var(--accent, #d8648c);
   }
+
   .contact-list .icon.whatsapp {
     background-color: transparent;
     border: 2px solid var(--accent, #d8648c);
   }
-  .contact-list .icon.email {
-    background-color: var(--accent, #d8648c);
-  }
 
-  /* Newsletter Form */
   .newsletter-form {
     display: flex;
-    margin-top: auto; /* Pushes form to the bottom */
+    margin-top: auto;
     border-radius: 50px;
     overflow: hidden;
     border: 1px solid #e0e0e0;
@@ -216,21 +214,20 @@ const today = new Date();
 
   .newsletter-form button {
     border: none;
-    background-color: var(--button-bg-color);
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
     color: var(--button-text-color);
     padding: 0 1.5rem;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: opacity 0.3s ease;
     font-family: 'Cairo', sans-serif;
   }
 
   .newsletter-form button:hover {
-    background-color: var(--secondary); /* Using secondary for hover */
+    opacity: 0.85;
   }
 
-  /* Footer Bottom */
   .footer-bottom {
     text-align: center;
     padding-top: 2rem;
@@ -243,15 +240,23 @@ const today = new Date();
     font-size: 0.9rem;
   }
 
+  .company-name-gradient {
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+  }
+
   @media (max-width: 1200px) {
     .footer-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     }
   }
 
   @media (max-width: 576px) {
     .footer-links {
-        columns: 1;
+      columns: 1;
     }
   }
 </style>

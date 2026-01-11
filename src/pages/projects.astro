@@ -49,22 +49,27 @@ import { projects } from '../data/projects.js';
   }
 
   .page-header {
-    background-color: transparent; /* Removed blue gradient */
-    text-align: right; /* Align text to the right */
+    background-color: transparent;
+    text-align: right;
     padding: 160px 0 80px 0;
   }
 
   .page-title {
     font-size: 3.5rem;
-    color: var(--primary); /* Changed from #fff */
     margin-bottom: 1rem;
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
 
   .page-subtitle {
     font-size: 1.2rem;
     max-width: 800px;
-    margin: 0; /* Remove auto margin */
-    color: var(--text-dark); /* Changed from #fff */
+    margin: 0;
+    color: var(--text-dark);
     opacity: 0.95;
   }
 
@@ -80,20 +85,32 @@ import { projects } from '../data/projects.js';
       background-color: var(--background);
   }
   .under-construction-section {
-      background-color: #fff; /* Make this section slightly different */
+      background-color: #fff;
   }
 
   .section-title {
     text-align: center;
     font-size: 2.8rem;
     margin-bottom: 3rem;
-    color: var(--primary);
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
   
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2.5rem;
+  }
+
+  /* Center the section titles */
+  .projects-section .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   @media (max-width: 768px) {

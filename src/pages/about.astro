@@ -60,14 +60,19 @@ const { about } = pageContent;
 
   .page-title {
     font-size: 3.5rem;
-    color: var(--primary); /* Changed from #fff */
     margin-bottom: 1rem;
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
 
   .page-subtitle {
     font-size: 1.2rem;
     max-width: 800px;
-    color: var(--text-dark); /* Changed from #fff */
+    color: var(--text-dark);
     opacity: 0.95;
   }
 
@@ -76,7 +81,7 @@ const { about } = pageContent;
   }
 
   .content-wrapper {
-    background-color: #ffffff; /* This should be a white card */
+    background-color: #ffffff;
     padding: 3rem;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
@@ -93,8 +98,13 @@ const { about } = pageContent;
 
   .section-title {
     font-size: 2.2rem;
-    color: var(--primary);
     margin-bottom: 1.5rem;
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
 
   .content-block p {
@@ -105,6 +115,7 @@ const { about } = pageContent;
 
   .values-section {
     margin-top: 2rem;
+    text-align: right;
   }
 
   .values-grid {
@@ -124,13 +135,22 @@ const { about } = pageContent;
   .value-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    color: var(--accent);
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .value-card h3 {
     font-size: 1.5rem;
-    color: var(--primary);
     margin-bottom: 0.5rem;
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
   }
 
   @media (max-width: 992px) {
