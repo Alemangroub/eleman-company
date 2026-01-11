@@ -1,6 +1,6 @@
 ---
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro'; // Import the new Footer component
+import Footer from '../components/Footer.astro'; 
 
 interface Props {
 	title: string;
@@ -50,22 +50,19 @@ const { title } = Astro.props;
 
 	body {
 		margin: 0;
-		color: #e0e0e0;
+		color: #000000;
 		min-height: 100vh;
-		background: linear-gradient(rgba(19, 21, 26, 0.6), rgba(19, 21, 26, 0.6)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2146&auto=format&fit=crop');
-		background-size: cover;
-		background-position: center;
-		background-attachment: fixed;
+		background-color: #ffffff;
 	}
 
 	main {
 		position: relative;
 		z-index: 1;
-    padding-top: 7rem; /* Adjusted for smaller screens */
+    padding-top: 7rem;
 	}
 
 	h1, h2, h3 {
-		font-weight: 900; /* Bolder headings */
+		font-weight: 900; 
 	}
 
 	code {
@@ -73,13 +70,7 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono, Courier New, monospace;
 	}
 
-  /* Responsive adjustments */
   @media (max-width: 768px) {
-    body {
-      background-image: linear-gradient(to bottom, #1E293B, #0F172A);
-      background-attachment: scroll;
-    }
-
     main {
       padding-top: 6rem;
     }
