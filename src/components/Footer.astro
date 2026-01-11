@@ -64,8 +64,8 @@ const currentYear = new Date().getFullYear();
 
 <style>
   .site-footer {
-    background-color: #f9f9f9;
-    color: #000000;
+    background-color: rgb(var(--secondary));
+    color: rgb(var(--primary));
     padding: 5rem 2rem;
     font-family: 'Cairo', sans-serif;
   }
@@ -100,7 +100,7 @@ const currentYear = new Date().getFullYear();
     font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 2rem;
-    color: #000000;
+    color: rgb(var(--primary));
     position: relative;
     padding-bottom: 1rem;
   }
@@ -112,7 +112,7 @@ const currentYear = new Date().getFullYear();
     right: 0;
     width: 40px;
     height: 3px;
-    background-color: var(--accent);
+    background-color: rgb(var(--accent));
     border-radius: 2px;
   }
 
@@ -136,7 +136,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-column a:hover {
-    color: var(--accent);
+    color: rgb(var(--accent));
   }
 
   .newsletter-form {
@@ -156,7 +156,7 @@ const currentYear = new Date().getFullYear();
     font-size: 1rem;
     outline: none;
     background: transparent;
-    color: #000000;
+    color: rgb(var(--primary));
   }
 
   .newsletter-form input::placeholder {
@@ -164,7 +164,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .newsletter-form button {
-    background-color: var(--accent);
+    background-color: rgb(var(--accent));
     color: #ffffff;
     border: none;
     padding: 0.8rem 1.5rem;
@@ -175,7 +175,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .newsletter-form button:hover {
-    background-color: var(--accent-dark);
+    background-color: rgb(var(--accent-dark));
   }
 
   .contact-info li {
@@ -193,8 +193,8 @@ const currentYear = new Date().getFullYear();
   }
 
   .contact-info svg {
-    color: var(--accent);
-    fill: var(--accent);
+    color: rgb(var(--accent));
+    fill: rgb(var(--accent));
     flex-shrink: 0;
   }
 
@@ -221,7 +221,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .social-icons a:hover {
-    color: var(--accent);
+    color: rgb(var(--accent));
     transform: scale(1.1);
   }
 

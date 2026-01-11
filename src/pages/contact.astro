@@ -4,7 +4,7 @@ import NewContactForm from '../components/NewContactForm.astro';
 ---
 
 <Layout title="اتصل بنا - شركة الايمان للتطوير العقاري">
-  <main class="contact-page">
+  <div class="contact-page">
     <div class="container">
       <h1 class="page-title">تواصل معنا</h1>
       <p class="page-subtitle">
@@ -43,18 +43,13 @@ import NewContactForm from '../components/NewContactForm.astro';
       <!-- Contact Form -->
       <NewContactForm />
     </div>
-  </main>
+  </div>
 </Layout>
 
 <style>
   .contact-page {
-    padding-top: 8rem !important; 
-    padding-bottom: 4rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    color: #000000;
-    min-height: 100vh;
-    background-color: #ffffff;
+    padding: 0 2rem 4rem 2rem;
+    color: rgb(var(--primary));
   }
 
   .container {
@@ -69,6 +64,7 @@ import NewContactForm from '../components/NewContactForm.astro';
     margin-bottom: 1rem;
     text-shadow: none;
     margin-top: 0; 
+    color: rgb(var(--primary));
   }
 
   .page-subtitle {
@@ -87,28 +83,30 @@ import NewContactForm from '../components/NewContactForm.astro';
   }
 
   .contact-card {
-    background-color: #ffffff;
-    border: 1px solid #eeeeee;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: 15px;
     padding: 2.5rem 2rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
   
   .contact-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 35px 0 rgba(0,0,0,0.15);
   }
 
   .card-icon {
     margin-bottom: 1.5rem;
-    color: var(--accent); 
+    color: rgb(var(--accent)); 
   }
 
   .contact-card h3 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #000000;
+    color: rgb(var(--primary));
     margin-bottom: 1rem;
   }
 
@@ -120,7 +118,7 @@ import NewContactForm from '../components/NewContactForm.astro';
   }
 
   .contact-card a:hover {
-    color: var(--accent);
+    color: rgb(var(--accent));
     text-decoration: underline;
   }
 
@@ -128,5 +126,10 @@ import NewContactForm from '../components/NewContactForm.astro';
     .contact-details-grid {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* Remove the main padding-top override from Layout.astro */
+  :global(main) {
+    padding-top: 7rem !important; /* Keep consistent padding */
   }
 </style>

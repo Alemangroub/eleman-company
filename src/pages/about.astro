@@ -81,7 +81,7 @@ import Layout from '../layouts/Layout.astro';
   h1 {
     font-size: 3.5rem;
     font-weight: 700;
-    color: #000000;
+    color: rgb(var(--primary));
     margin-bottom: 3rem;
   }
 
@@ -94,14 +94,23 @@ import Layout from '../layouts/Layout.astro';
     display: inline-block;
     margin-bottom: 2.5rem;
     padding: 1rem 2.5rem;
-    border-radius: 12px;
-    background-color: #f9f9f9;
-    border: 1px solid #eeeeee;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .title-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
   }
 
   .title-card h2 {
     font-size: 2.2rem;
-    color: #000000;
+    color: rgb(var(--primary));
     margin: 0;
     padding: 0;
     border-bottom: none;
@@ -119,9 +128,15 @@ import Layout from '../layouts/Layout.astro';
     height: 0;
     overflow: hidden;
     max-width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border: 1px solid #eeeeee;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .video-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
   }
 
   .video-container iframe {
@@ -139,8 +154,14 @@ import Layout from '../layouts/Layout.astro';
     text-align: right;
     line-height: 1.9;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 15px;
     margin-top: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .info-section:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 35px 0 rgba(0,0,0,0.15);
   }
 
   .info-section:first-of-type {
@@ -148,16 +169,18 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .card-style {
-    background-color: #ffffff;
-    border: 1px solid #eeeeee;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
 
   h2 {
     font-size: 2.5rem;
-    color: #000000;
+    color: rgb(var(--primary));
     margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--accent);
+    border-bottom: 2px solid rgb(var(--accent));
     padding-bottom: 0.5rem;
     display: inline-block;
   }
@@ -184,7 +207,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .values-list strong {
-    color: #000000;
+    color: rgb(var(--primary));
     font-weight: 700;
   }
 

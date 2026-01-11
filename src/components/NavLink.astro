@@ -1,9 +1,7 @@
 ---
 const { href, text } = Astro.props;
-const currentPath = new URL(Astro.request.url).pathname;
-const isActive = href === currentPath || (href !== '/' && currentPath.startsWith(href));
 ---
-<a href={href} class:list={["nav-link", { active: isActive }]}>
+<a href={href} class="nav-link">
   {text}
 </a>
 
@@ -12,32 +10,10 @@ const isActive = href === currentPath || (href !== '/' && currentPath.startsWith
     font-family: 'Cairo', sans-serif;
     font-size: 1rem;
     font-weight: 700;
-    color: #000000; 
+    color: #FFFFFF;
     text-decoration: none;
     position: relative;
     padding: 0.5rem 0;
-    transition: color 0.3s ease;
-  }
-
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: rgb(var(--accent));
-    transition: width 0.3s ease-out;
-  }
-
-  .nav-link:hover,
-  .nav-link.active {
-    color: #000000;
-  }
-
-  .nav-link:hover::after,
-  .nav-link.active::after {
-    width: 100%;
   }
 
   @media (max-width: 768px) {

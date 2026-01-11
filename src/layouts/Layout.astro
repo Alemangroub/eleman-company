@@ -1,10 +1,6 @@
 ---
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro'; 
-
-interface Props {
-	title: string;
-}
+import Footer from '../components/Footer.astro';
 
 const { title } = Astro.props;
 ---
@@ -13,15 +9,16 @@ const { title } = Astro.props;
 <html lang="ar" dir="rtl">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
+		<meta name="description" content="شركة الايمان للتطوير العقاري، رائدة في صعيد مصر" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
-		<link rel="preconnect" href="https://images.unsplash.com">
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
 	</head>
 	<body>
 		<Header />
@@ -31,56 +28,32 @@ const { title } = Astro.props;
 		<Footer />
 	</body>
 </html>
+
 <style is:global>
 	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
+		--primary: 10 46 92;
+		--primary-rgb: 10, 46, 92;
+		--secondary: 240 242 245; 
+		--accent: 255 204 0;
+		--accent-dark: 230 184 0;
+		--text-light: 240 242 245;
+		--text-dark: 10 20 30;
 	}
+
 	html {
 		font-family: 'Cairo', sans-serif;
+		background-color: #F0F2F5; /* Fallback */
 		scroll-behavior: smooth;
 	}
 
 	body {
 		margin: 0;
-		color: #000000;
-		min-height: 100vh;
-		background-color: #ffffff;
+		background-color: rgb(var(--secondary));
+		color: rgb(var(--text-dark));
 	}
 
-	main {
-		position: relative;
-		z-index: 1;
-    padding-top: 7rem;
+	a {
+		color: rgb(var(--accent));
+		text-decoration: none;
 	}
-
-	h1, h2, h3 {
-		font-weight: 900; 
-	}
-
-	code {
-		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-			Bitstream Vera Sans Mono, Courier New, monospace;
-	}
-
-  @media (max-width: 768px) {
-    main {
-      padding-top: 6rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    h2 {
-      font-size: 2rem;
-    }
-  }
 </style>

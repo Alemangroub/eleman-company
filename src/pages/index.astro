@@ -2,197 +2,81 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectsSection from '../components/ProjectsSection.astro';
 import UnderConstructionProjects from '../components/UnderConstructionProjects.astro';
-import NewContactForm from '../components/NewContactForm.astro';
 ---
 
-<Layout title="شركة الايمان للتطوير العقاري بصعيد مصر">
-	<div class="hero-section">
-		<h1 class="main-headline">بنيان يرسخ الثقة في قلب صعيد مصر</h1>
-		<p class="sub-headline">نصنع معالم الغد في صعيد مصر، ونصمم مشاريع عقارية استثنائية تلهم الحياة وتصنع الفرص.</p>
+<Layout title="شركة الايمان للتطوير العقاري">
+	<div class="hero">
+		<div class="hero-content">
+			<h1 class="main-title">الجودة تلتقي بالابتكار في قلب صعيد مصر</h1>
+			<p class="subtitle">نحن لا نبني العقارات فقط، بل نبني ثقة تدوم</p>
+			<a href="/projects" class="cta-button">اكتشف مشاريعنا</a>
+		</div>
 	</div>
-
-  <section class="services-section">
-    <h2 class="section-title">خدماتنا</h2>
-    <div class="services-grid">
-      <!-- Service Card 1: Real Estate Development -->
-      <div class="service-card">
-        <div class="card-content">
-          <div class="service-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21h20v-2H2v2zm5-11v11h4V10H7zm8 0v11h4V10h-4zM2 6h20v3H2V6zm4-4h4v3H6V2zm8 0h4v3h-4V2z"/></svg>
-          </div>
-          <h3>التطوير العقاري في صعيد مصر</h3>
-          <p>متخصصون في تحويل الفرص الكامنة في صعيد مصر إلى مشاريع عقارية بارزة. من التخطيط الأولي ودراسات الجدوى، إلى التصميم المبتكر والبناء الدقيق، نحن ندير كل مرحلة من مراحل التطوير لنضمن إنشاء مجتمعات سكنية وتجارية تصنع قيمة مستدامة لأهالي صعيد مصر.</p>
-        </div>
-      </div>
-      
-      <!-- Service Card 2: Investment Management -->
-      <div class="service-card">
-        <div class="card-content">
-          <div class="service-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          </div>
-          <h3>إدارة الاستثمارات</h3>
-          <p>نقدم لشركائنا والمستثمرين خبرتنا العميقة في السوق العقاري لتوجيههم نحو الفرص الأكثر أمانًا وربحية. نحن ندير المحافظ العقارية بكفاءة، ونقدم تحليلات دقيقة للسوق، ونعمل على تعظيم العائد على الاستثمار من خلال استراتيجيات مدروسة.</p>
-        </div>
-      </div>
-
-      <!-- Service Card 3: Real Estate Marketing -->
-      <div class="service-card">
-         <div class="card-content">
-          <div class="service-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-2.1 0-4.1-1.2-4.1-3.5C.4 10.8 2.4 9 4.5 9c2.1 0 4.1 1.8 4.1 4s-2 3.5-4.1 3.5zM19.5 9c2.1 0 4.1 1.8 4.1 4s-2 3.5-4.1 3.5c-2.1 0-4.1-1.2-4.1-3.5s2-4 4.1-4zM2 8l9.6-6.4a1 1 0 0 1 .8 0L22 8"/><path d="M4 22V9l8-6 8 6v13h-6v-6h-4v6H4z"/></svg>
-          </div>
-          <h3>التسويق العقاري</h3>
-          <p>فريقنا المتخصص يبني جسوراً من الثقة بين مشاريعنا وعملائنا. باستخدام مزيج من قنوات التسويق الرقمي والتقليدي، نحن نروي قصة كل مشروع ونسلط الضوء على مميزاته الفريدة لضمان تغطية شاملة تصل إلى العملاء المناسبين.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <ProjectsSection />
-  <UnderConstructionProjects />
-  <NewContactForm />
-
+	<ProjectsSection />
+	<UnderConstructionProjects />
 </Layout>
 
 <style>
-	.hero-section {
+	.hero {
+		position: relative;
+		height: 70vh;
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
 		align-items: center;
-		min-height: 50vh;
+		justify-content: center;
 		text-align: center;
-		color: #000000;
-    padding-bottom: 5rem;
+		padding: 4rem 2rem;
 	}
 
-	.main-headline {
-		font-size: 4.5rem; 
+	.hero-content {
+		position: relative;
+		z-index: 2;
+	}
+
+	.main-title {
+		font-size: 4.5rem;
 		font-weight: 900;
 		margin-bottom: 1rem;
-		text-shadow: none; 
+		color: rgb(var(--primary));
 	}
 
-	.sub-headline {
-		font-size: 1.5rem; 
-		max-width: 600px; 
-		line-height: 1.7;
-		text-shadow: none;
+	.subtitle {
+		font-size: 1.8rem;
+		margin-bottom: 2rem;
+		color: rgb(var(--primary));
+		opacity: 0.8;
 	}
 
-  /* Services Section */
-  .services-section {
-    padding: 5rem 2rem;
-    text-align: center;
-    background-color: #f9f9f9;
-  }
+	.cta-button {
+		background-color: rgb(var(--accent));
+		color: rgb(var(--primary));
+		padding: 1rem 2rem;
+		border-radius: 50px;
+		text-decoration: none;
+		font-size: 1.2rem;
+		font-weight: bold;
+	}
 
-  .section-title {
-    font-size: 2.8rem;
-    color: #000000;
-    font-weight: 900;
-    position: relative;
-    padding-bottom: 1.5rem;
-    margin-bottom: 4rem;
-  }
-
-  .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background-color: var(--accent);
-    border-radius: 2px;
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .service-card {
-    transition: transform 0.3s ease;
-  }
-
-  .service-card:hover {
-    transform: translateY(-8px);
-  }
-
-  .card-content {
-    height: 100%;
-    background-color: #ffffff;
-    border: 1px solid #eeeeee;
-    border-radius: 15px;
-    padding: 2.5rem;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  }
-
-  .service-card:hover .card-content {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .service-icon {
-    margin-bottom: 1.5rem;
-    color: var(--accent);
-  }
-
-  .card-content h3 {
-    font-size: 1.6rem;
-    color: #000000;
-    margin-bottom: 1rem;
-  }
-
-  .card-content p {
-    font-size: 1rem;
-    color: #555555;
-    line-height: 1.8;
-  }
-
-  /* Responsive Adjustments */
-  @media (max-width: 992px) {
-    .services-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-  }
+	.cta-button:hover {
+		background-color: rgb(var(--accent-dark));
+	}
 
   @media (max-width: 768px) {
-    .hero-section {
-        padding: 0 1rem 3rem 1rem;
-        min-height: 40vh;
+    .hero {
+      height: auto;
+      min-height: 50vh;
+    }
+    
+    .main-title {
+      font-size: 3rem;
+    }
+    
+    .subtitle {
+      font-size: 1.3rem;
     }
 
-    .main-headline {
-        font-size: 2.8rem; 
-    }
-
-    .sub-headline {
-        font-size: 1.2rem; 
-    }
-
-    .services-section {
-        padding: 4rem 1rem; 
-    }
-
-    .section-title {
-        font-size: 2.2rem; 
-        margin-bottom: 3rem;
-    }
-
-    .card-content {
-        padding: 2rem; 
-    }
-
-    .card-content h3 {
-        font-size: 1.4rem; 
-    }
+		.cta-button {
+			padding: 0.8rem 1.5rem;
+			font-size: 1rem;
+		}
   }
 </style>
