@@ -58,7 +58,7 @@ const { project } = Astro.props;
 
 <style>
   .project-details-page {
-    color: #fff;
+    color: var(--text-dark); /* Changed from #fff */
   }
 
   /* Hero Section */
@@ -94,7 +94,7 @@ const { project } = Astro.props;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(26, 26, 26, 0.8) 0%, rgba(26, 26, 26, 0.2) 70%, transparent 100%);
+    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.7) 0%, transparent 100%);
   }
 
   .hero-content {
@@ -106,20 +106,22 @@ const { project } = Astro.props;
   .project-title {
     font-size: 4rem;
     font-weight: 900;
+    color: #fff; /* Title on image can stay white */
     text-shadow: 0 4px 10px rgba(0,0,0,0.5);
     margin: 0;
   }
 
   .project-location {
     font-size: 1.5rem;
-    color: #ffd700;
+    color: var(--accent); /* Changed from gold */
     margin-top: 0.5rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.4);
   }
 
   /* Main Content */
   .project-main-content {
     padding: 4rem 0;
-    background-color: #1a1a1a;
+    background-color: var(--background); /* Changed from #1a1a1a */
   }
   
   .container {
@@ -143,17 +145,17 @@ const { project } = Astro.props;
   .section-heading {
     font-size: 2rem;
     font-weight: 700;
-    color: #ffd700;
+    color: var(--primary); /* Changed from gold */
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    border-bottom: 2px solid rgba(var(--primary-rgb), 0.2); /* Adjusted border */
     display: inline-block;
   }
 
   .project-description {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #ccc;
+    color: var(--text-muted); /* Changed from #ccc */
   }
 
   .features-list {
@@ -163,20 +165,22 @@ const { project } = Astro.props;
   }
 
   .feature-item {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: #fff; /* Changed background */
     padding: 0.75rem 1rem;
     border-radius: 8px;
     margin-bottom: 0.75rem;
-    border-left: 4px solid #ffd700;
+    border-left: 4px solid var(--accent); /* Changed border color */
     transition: background-color 0.3s;
+    color: var(--text-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
 
   .feature-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #f9f9f9;
   }
 
   .area-info {
-      background-color: rgba(255, 215, 0, 0.1);
+      background-color: rgba(var(--primary-rgb), 0.08);
       padding: 1.5rem;
       border-radius: 8px;
       text-align: center;
@@ -184,14 +188,14 @@ const { project } = Astro.props;
 
   .area-title {
       font-size: 1.2rem;
-      color: #ffd700;
+      color: var(--primary); /* Changed color */
       margin: 0 0 0.5rem 0;
   }
 
   .area-value {
       font-size: 1.5rem;
       font-weight: bold;
-      color: #fff;
+      color: var(--text-dark); /* Changed color */
       margin: 0;
   }
 

@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProjectsSection from '../components/ProjectsSection.astro';
-import UnderConstructionProjects from '../components/UnderConstructionProjects.astro';
+import { projects } from '../data/projects.js';
 ---
 
 <Layout title="شركة الايمان للتطوير العقاري">
@@ -12,8 +12,21 @@ import UnderConstructionProjects from '../components/UnderConstructionProjects.a
 			<a href="/projects" class="cta-button">اكتشف مشاريعنا</a>
 		</div>
 	</div>
-	<ProjectsSection />
-	<UnderConstructionProjects />
+
+	<!-- Use the flexible ProjectsSection for Delivered Projects -->
+	<ProjectsSection 
+		title="مشاريع تم تسليمها"
+		projects={projects.delivered}
+		background="var(--background)"
+	/>
+
+	<!-- Use the flexible ProjectsSection for Under Construction Projects -->
+	<ProjectsSection 
+		title="مشاريع تحت الإنشاء"
+		projects={projects.underConstruction}
+		background="var(--background)"
+	/>
+
 </Layout>
 
 <style>
@@ -25,6 +38,8 @@ import UnderConstructionProjects from '../components/UnderConstructionProjects.a
 		justify-content: center;
 		text-align: center;
 		padding: 4rem 2rem;
+        padding-top: 220px; 
+		background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
 	}
 
 	.hero-content {
@@ -36,47 +51,43 @@ import UnderConstructionProjects from '../components/UnderConstructionProjects.a
 		font-size: 4.5rem;
 		font-weight: 900;
 		margin-bottom: 1rem;
-		color: rgb(var(--primary));
+		color: #fff;
 	}
 
 	.subtitle {
-		font-size: 1.8rem;
+		font-size: 1.5rem;
+		color: #fff;
 		margin-bottom: 2rem;
-		color: rgb(var(--primary));
-		opacity: 0.8;
 	}
 
 	.cta-button {
-		background-color: rgb(var(--accent));
-		color: rgb(var(--primary));
-		padding: 1rem 2rem;
-		border-radius: 50px;
-		text-decoration: none;
+		display: inline-block;
+		padding: 0.8rem 2rem;
 		font-size: 1.2rem;
-		font-weight: bold;
+		font-weight: 700;
+		font-family: 'Orbitron', sans-serif;
+		color: #fff;
+		background: linear-gradient(90deg, var(--accent), var(--secondary));
+		border: none;
+		border-radius: 8px;
+		text-decoration: none;
+		transition: transform 0.3s, box-shadow 0.3s;
+		box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
 	}
 
 	.cta-button:hover {
-		background-color: rgb(var(--accent-dark));
+		transform: translateY(-3px);
+		box-shadow: 0 7px 25px rgba(var(--primary-rgb), 0.3);
 	}
 
-  @media (max-width: 768px) {
-    .hero {
-      height: auto;
-      min-height: 50vh;
-    }
-    
-    .main-title {
-      font-size: 3rem;
-    }
-    
-    .subtitle {
-      font-size: 1.3rem;
-    }
+	@media (max-width: 992px) {
+		.main-title { font-size: 3.5rem; }
+		.hero { height: auto; padding-top: 180px; padding-bottom: 60px; }
+	}
 
-		.cta-button {
-			padding: 0.8rem 1.5rem;
-			font-size: 1rem;
-		}
-  }
+	@media (max-width: 768px) {
+		.main-title { font-size: 2.5rem; }
+		.subtitle { font-size: 1.2rem; }
+        .hero { padding-top: 140px; }
+	}
 </style>

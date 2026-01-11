@@ -1,18 +1,12 @@
-
----
-// This component will contain the search icon and the search form.
----
-<div id="search-component">
-  <form action="/search" method="GET" class="search-form">
-    <input type="search" name="q" placeholder="ابحث في الموقع..." aria-label="Search" class="search-input">
-    <button type="submit" class="search-button" aria-label="Submit search">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-    </button>
-  </form>
-</div>
+<form action="/search" method="GET" class="search-form">
+  <input type="search" name="q" placeholder="ابحث في الموقع..." class="search-input" aria-label="Search" />
+  <button type="submit" class="search-button" aria-label="Submit search">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+  </button>
+</form>
 
 <style>
   .search-form {
@@ -22,49 +16,56 @@
   }
 
   .search-input {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: 'Cairo', sans-serif;
+    width: 200px;
+    padding: 0.5rem 1rem;
+    padding-left: 2.5rem; 
+    border: 1px solid #ccc;
     border-radius: 20px;
-    color: #FFFFFF;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
-    width: 200px; /* Adjust width as needed */
-    transition: all 0.3s ease;
-    font-family: inherit;
-  }
-
-  .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    transition: width 0.3s ease, background-color 0.3s ease;
+    background-color: #f0f0f0;
+    color: black;
   }
 
   .search-input:focus {
+    width: 240px;
     outline: none;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #fff;
     border-color: rgb(var(--accent));
-    width: 220px; /* Expand on focus */
-    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.3);
   }
 
   .search-button {
     position: absolute;
-    right: 0.5rem; 
+    left: 0.7rem; 
     top: 50%;
     transform: translateY(-50%);
-    background: transparent;
+    background: none;
     border: none;
     cursor: pointer;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #555;
   }
 
   .search-button svg {
-    stroke: rgba(255, 255, 255, 0.8);
-    transition: stroke 0.3s ease;
+    stroke: currentColor;
   }
 
-  .search-button:hover svg, 
-  .search-input:focus + .search-button svg {
-    stroke: rgb(var(--accent));
+  /* Right-to-left adjustments */
+  .search-form {
+    direction: rtl;
+  }
+
+  .search-input {
+    padding-right: 2.5rem; /* Space for icon on the right */
+    padding-left: 1rem;
+  }
+
+  .search-button {
+    right: 0.7rem; /* Position icon on the right */
+    left: auto;
   }
 </style>

@@ -1,59 +1,77 @@
 ---
-import { projects } from '../data/projects.js';
 import ProjectCard from './ProjectCard.astro';
+import { projects as allProjectsData } from '../data/projects.js';
+
+const { 
+  title = "مشاريع تم تسليمها", 
+  projects = allProjectsData.delivered, 
+  showStatus = true, 
+  background = "var(--background)"
+} = Astro.props;
 ---
 
-<section id="projects" class="projects-section">
-  <h2 class="section-title">مشاريع تم تنفيذها</h2>
-  <div class="projects-grid">
-    {projects.delivered.map(project => (
-      <ProjectCard {project} />
-    ))}
+<section class="projects-section" style=`background-color: ${background}`>
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">{title}</h2>
+      <a href="/projects" class="see-all-link">عرض الكل &rarr;</a>
+    </div>
+    <div class="projects-grid">
+      {projects.map(project => (
+        <ProjectCard project={{ ...project, status: project.status || (title.includes("تسليمها") ? 'delivered' : 'under-construction') }} showStatus={showStatus} />
+      ))}
+    </div>
   </div>
 </section>
 
 <style>
   .projects-section {
-    padding: 5rem 2rem;
-    text-align: center;
+    padding: 4rem 0;
+    text-align: right;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
   }
 
   .section-title {
     font-size: 2.8rem;
-    color: rgb(var(--primary));
-    font-weight: 900;
-    position: relative;
-    padding-bottom: 1.5rem;
-    margin-bottom: 4rem;
+    color: var(--primary);
   }
 
-  .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background-color: rgb(var(--accent));
-    border-radius: 2px;
+  .see-all-link {
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s ease;
+  }
+
+  .see-all-link:hover {
+    color: var(--primary);
   }
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
   }
 
   @media (max-width: 768px) {
-    .projects-section {
-      padding: 4rem 1rem;
+    .section-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
     }
-
     .section-title {
-      font-size: 2.2rem;
+        font-size: 2.2rem;
+    }
+     .projects-grid {
+        grid-template-columns: 1fr;
     }
   }
 </style>

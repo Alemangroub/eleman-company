@@ -1,245 +1,154 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { pageContent } from '../data/pages.js';
+
+const { about } = pageContent;
 ---
 
-<Layout title="من نحن">
-  <div class="page-content">
-    <div class="content-wrapper">
-      <h1>نحن نبني الثقة... ونشيد المستقبل في صعيد مصر</h1>
+<Layout title={`من نحن - ${about.name}`}>
+  <div class="about-page">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">{about.title}</h1>
+        <p class="page-subtitle">{about.subtitle}</p>
+      </div>
+    </div>
 
-      <div class="video-section">
-        <div class="title-card">
-          <h2>قيادة ورؤية</h2>
+    <div class="page-content">
+      <div class="container">
+        <div class="content-wrapper">
+            <div class="mission-vision-section">
+              <div class="content-block">
+                <h2 class="section-title">{about.mission.title}</h2>
+                <p>{about.mission.text}</p>
+              </div>
+              <div class="content-block">
+                <h2 class="section-title">{about.vision.title}</h2>
+                <p>{about.vision.text}</p>
+              </div>
+            </div>
+
+            <div class="values-section">
+                <h2 class="section-title">{about.values.title}</h2>
+                <div class="values-grid">
+                  {about.values.list.map(value => (
+                    <div class="value-card">
+                      <div class="value-icon">{value.icon}</div>
+                      <h3>{value.name}</h3>
+                      <p>{value.description}</p>
+                    </div>
+                  ))}
+                </div>
+            </div>
         </div>
-        <div class="videos-grid">
-          <div class="video-container">
-            <iframe
-              src="https://www.youtube.com/embed/Hh_DrP6h4CY?rel=0&showinfo=0"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-          <div class="video-container">
-            <iframe
-              src="https://www.youtube.com/embed/2osxm5pcJtc?rel=0&showinfo=0"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
       </div>
-
-      <div class="info-section card-style">
-        <h2>من نحن؟</h2>
-        <p>
-          نحن شركة رائدة في مجال التطوير العقاري في صعيد مصر، نجمع بين الخبرة الطويلة والرؤية العصرية لإنشاء مشاريع تتجاوز توقعات عملائنا. منذ تأسيسنا، ونحن ملتزمون بأعلى معايير الجودة والابتكار، ونسعى لبناء مجتمعات مستدامة في قلب صعيد مصر.
-        </p>
-      </div>
-
-      <div class="info-section card-style stacked-card">
-        <h2>رؤيتنا</h2>
-        <p>
-          أن نكون الشركة الرائدة والمطور العقاري الأكثر ثقة في صعيد مصر، من خلال تقديم مشاريع مبتكرة ومستدامة تعيد تعريف معايير جودة الحياة في المنطقة.
-        </p>
-      </div>
-
-      <div class="info-section card-style stacked-card">
-        <h2>رسالتنا</h2>
-        <p>
-          تطوير مجتمعات عمرانية متكاملة تتجاوز توقعات عملائنا، عبر توظيف فريق من الخبراء، وتطبيق أحدث التقنيات الهندسية، والالتزام الراسخ بقيمنا التي تضع العميل دائمًا في المقدمة.
-        </p>
-      </div>
-
-      <div class="info-section card-style stacked-card">
-        <h2>قيمنا الأساسية</h2>
-        <ul class="values-list">
-          <li><strong>الجودة:</strong> نلتزم بأعلى معايير الجودة في كل تفاصيل مشاريعنا.</li>
-          <li><strong>النزاهة:</strong> نبني الثقة من خلال الشفافية والمصداقية المطلقة.</li>
-          <li><strong>العميل أولاً:</strong> احتياجات عملائنا ورضاهم هي محور اهتمامنا.</li>
-          <li><strong>الابتكار:</strong> نسعى باستمرار لتبني أفكار جديدة وتقنيات حديثة.</li>
-        </ul>
-      </div>
-
     </div>
   </div>
 </Layout>
 
 <style>
-  .page-content {
-    padding-bottom: 5rem;
-  }
-  
-  .content-wrapper {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2.5rem;
-    text-align: center;
+  .about-page {
+    padding-bottom: 4rem; 
+    background-color: var(--background); /* Use the global background */
   }
 
-  h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: rgb(var(--primary));
-    margin-bottom: 3rem;
-  }
-
-  .video-section {
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .title-card {
-    display: inline-block;
-    margin-bottom: 2.5rem;
-    padding: 1rem 2.5rem;
-    border-radius: 15px;
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .title-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  }
-
-  .title-card h2 {
-    font-size: 2.2rem;
-    color: rgb(var(--primary));
-    margin: 0;
-    padding: 0;
-    border-bottom: none;
-  }
-
-  .videos-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-
-  .video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    max-width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .video-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  }
-
-  .video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .info-section {
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+  .page-header {
+    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
+    color: var(--text-light);
     text-align: right;
-    line-height: 1.9;
-    padding: 2rem;
-    border-radius: 15px;
-    margin-top: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 160px 0 80px 0;
   }
 
-  .info-section:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 35px 0 rgba(0,0,0,0.15);
-  }
-
-  .info-section:first-of-type {
-      margin-top: 0;
-  }
-
-  .card-style {
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  }
-
-  h2 {
-    font-size: 2.5rem;
-    color: rgb(var(--primary));
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid rgb(var(--accent));
-    padding-bottom: 0.5rem;
-    display: inline-block;
-  }
-
-  p {
-    font-size: 1.1rem;
-    color: #555555;
-  }
-
-  .values-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    color: #555555;
-    font-size: 1.1rem;
-  }
-
-  .values-list li {
+  .page-title {
+    font-size: 3.5rem;
+    color: #fff;
     margin-bottom: 1rem;
   }
 
-  .values-list li:last-child {
-    margin-bottom: 0;
+  .page-subtitle {
+    font-size: 1.2rem;
+    max-width: 800px;
+    opacity: 0.95;
   }
 
-  .values-list strong {
-    color: rgb(var(--primary));
-    font-weight: 700;
+  .page-content {
+    padding: 4rem 0;
+  }
+
+  .content-wrapper {
+    background-color: #ffffff; /* This should be a white card */
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  
+  .mission-vision-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+
+  .content-block p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+
+  .values-section {
+    margin-top: 2rem;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .value-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #eee;
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent);
+  }
+
+  .value-card h3 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 992px) {
+    .mission-vision-section {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    .content-wrapper {
+      padding: 2rem;
+    }
   }
 
   @media (max-width: 768px) {
-    .videos-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+    .page-header {
+      padding: 120px 0 60px 0;
     }
-
-    .content-wrapper {
-      padding: 1.5rem;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .title-card h2 {
-      font-size: 1.8rem;
-    }
-
-    h2 {
-      font-size: 2rem;
-    }
-
-    .info-section {
-      padding: 1.5rem;
-    }
-
-    p, .values-list {
-      font-size: 1rem;
+    .page-title {
+      font-size: 2.8rem;
     }
   }
 </style>

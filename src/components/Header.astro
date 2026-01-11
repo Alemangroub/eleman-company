@@ -1,18 +1,31 @@
 ---
 import NavLink from './NavLink.astro';
 import Search from './Search.astro';
-const companyName = "شركة الايمان للاستثمار والتطوير العقاري";
-const words = companyName.split(' ');
 --- 
 <header id="main-header" class="site-header">
     <div class="container">
         <div class="header-content">
-            <div class="logo-container">
-                <a href="/" class="company-logo">
-                    {words.map((word, index) => (<span style={`animation-delay: ${index * 0.1}s`}>{word}&nbsp;</span>))}
-                </a>
-            </div>
-
+            <a href="/" class="logo-container" aria-label="Eleman Company Home">
+                <svg width="0" height="0" style="position:absolute">
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#80e6ff;" />
+                            <stop offset="100%" style="stop-color:#d8648c;" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="logo-shape">
+                    <svg class="house-outline" viewBox="0 20 100 80" preserveAspectRatio="xMidYMid meet">
+                        <path d="M 25 90 L 32 80 L 32 42 L 50 25 L 68 42 L 68 90" stroke="url(#logo-gradient)" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="eleman">Eleman</span>
+                    <span class="company">Company</span>
+                    <span class="tagline">For real estate investment</span>
+                </div>
+            </a>
+            
             <div class="nav-and-actions">
                 <nav class="main-nav">
                     <NavLink href="/" text="الرئيسية" />
@@ -51,17 +64,14 @@ const words = companyName.split(' ');
 </script>
 
 <style>
-    .site-header {
-    background: rgba(var(--accent), 0.8);
+   .site-header {
+    background: transparent;
     padding: 1rem 0;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(var(--text-dark), 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     }
 
     .container {
@@ -76,18 +86,56 @@ const words = companyName.split(' ');
         align-items: center;
     }
 
-    .company-logo {
-        color: rgb(var(--text-dark));
+    .logo-container {
+        display: grid;
+        place-items: center;
+        width: 250px;
         text-decoration: none;
-        font-size: 1.5rem;
-        font-weight: 900;
-        overflow: hidden;
     }
 
-    .company-logo span {
-        display: inline-block;
+    .logo-shape, .logo-text {
+        grid-area: 1 / 1;
+    }
+
+    .logo-shape {
+        width: 100%;
+        height: 75px;
+    }
+
+    .house-outline {
+        width: 100%;
+        height: 100%;
+    }
+
+    .logo-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white; /* Fallback */
+    }
+
+    .logo-text span {
+        font-family: 'Orbitron', sans-serif;
+        background: linear-gradient(90deg, #80e6ff, #d8648c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        font-weight: 600;
+        line-height: 1.1;
         opacity: 0;
         animation: fadeInDown 0.5s forwards;
+    }
+
+    .logo-text .eleman { font-size: 2rem; animation-delay: 0.1s; }
+    .logo-text .company { font-size: 1.6rem; margin-top: -2px; animation-delay: 0.2s;}
+    .logo-text .tagline {
+        font-family: 'Cairo', sans-serif;
+        font-size: 0.6rem;
+        font-weight: 400;
+        margin-top: 2px;
+        animation-delay: 0.3s;
     }
 
     .main-nav :global(a),
@@ -95,6 +143,7 @@ const words = companyName.split(' ');
     .hamburger-menu {
         opacity: 0;
         animation: fadeInDown 0.5s forwards;
+        text-shadow: none;
     }
 
     .main-nav :global(a):nth-child(1) { animation-delay: 0.6s; }
@@ -131,28 +180,6 @@ const words = companyName.split(' ');
         gap: 2.5rem;
     }
 
-    .main-nav :global(a) {
-        color: rgb(var(--text-dark));
-        position: relative;
-        transition: color 0.3s;
-    }
-
-    .main-nav :global(a)::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: -5px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgb(var(--text-dark));
-        transition: width 0.3s;
-    }
-
-    .main-nav :global(a:hover)::after {
-        width: 100%;
-    }
-
     .header-actions {
         display: flex;
         align-items: center;
@@ -160,7 +187,7 @@ const words = companyName.split(' ');
     }
 
     .whatsapp-icon svg {
-        stroke: rgb(var(--text-dark));
+        stroke: black;
         transition: transform 0.3s;
     }
 
@@ -175,7 +202,7 @@ const words = companyName.split(' ');
         cursor: pointer;
         padding: 0;
         z-index: 1001;
-        color: rgb(var(--text-dark));
+        color: black;
     }
 
     .close-icon {
@@ -188,17 +215,32 @@ const words = companyName.split(' ');
     .hamburger-menu[aria-expanded="true"] .close-icon {
         display: block;
     }
+     .hamburger-menu[aria-expanded="true"] {
+        color: rgb(var(--text-light));
+     }
 
     @media (max-width: 1024px) {
+        .logo-container {
+            width: 180px;
+        }
+        .logo-text .eleman { font-size: 1.5rem; }
+        .logo-text .company { font-size: 1.2rem; }
+        .logo-text .tagline { font-size: 0.5rem; }
         .main-nav {
             gap: 1.5rem;
-        }
-        .company-logo {
-            font-size: 1.3rem;
         }
     }
 
     @media (max-width: 768px) {
+        .header-content {
+            justify-content: flex-end; 
+        }
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 15px; 
+        }
         .hamburger-menu {
             display: block;
         }
@@ -207,16 +249,21 @@ const words = companyName.split(' ');
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
+            /* Changed from justify-content: center */
+            justify-content: flex-start;
+            padding-top: 25vh; /* Added padding to push content down */
+            gap: 3rem; /* Increased gap for better spacing */
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(var(--accent), 0.95);
+            background-color: rgba(var(--primary-rgb), 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto; /* Add scroll for smaller screens */
         }
         
         .nav-and-actions.is-active {
@@ -233,6 +280,36 @@ const words = companyName.split(' ');
         .header-actions {
             flex-direction: column;
             gap: 2rem;
+        }
+
+        .header-actions .whatsapp-icon svg {
+            stroke: rgb(var(--text-light));
+            width: 32px;
+            height: 32px;
+        }
+        
+        .nav-and-actions.is-active :global(.search-input) {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgb(var(--text-light));
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .nav-and-actions.is-active :global(.search-input::placeholder) {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-and-actions.is-active :global(.search-button svg) {
+            stroke: rgb(var(--text-light));
+        }
+
+        .nav-and-actions.is-active :global(.search-input:focus) {
+            width: 85%;
+            max-width: 320px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgb(var(--accent));
+            box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
         }
 
         body.no-scroll {

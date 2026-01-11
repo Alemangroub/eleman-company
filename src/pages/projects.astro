@@ -1,62 +1,113 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ProjectsSection from '../components/ProjectsSection.astro';
-import UnderConstructionProjects from '../components/UnderConstructionProjects.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects.js';
 ---
 
-<Layout title="مشاريعنا">
-  <div class="page-content">
-    <div class="content-wrapper">
-      <h1 class="page-title">اكتشف مشاريعنا المميزة</h1>
-
-      <div class="projects-category">
-        <ProjectsSection />
+<Layout title="مشاريعنا - شركة الايمان للتطوير العقاري">
+  <div class="projects-page">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">مشاريعنا العقارية</h1>
+        <p class="page-subtitle">
+          استكشف مشاريعنا المتميزة، من الوحدات التي تم تسليمها إلى المشاريع الواعدة قيد الإنشاء.
+        </p>
       </div>
+    </div>
 
-      <div class="projects-category">
-        <UnderConstructionProjects />
-      </div>
+    <div class="page-content">
+      <!-- Delivered Projects Section -->
+      <section id="delivered" class="projects-section delivered-section">
+        <div class="container">
+          <h2 class="section-title">مشاريع تم تسليمها</h2>
+          <div class="projects-grid">
+            {projects.delivered.map(project => (
+              <ProjectCard project={{...project, status: 'delivered'}} />
+            ))}
+          </div>
+        </div>
+      </section>
 
+      <!-- Under Construction Projects Section -->
+      <section id="under-construction" class="projects-section under-construction-section">
+        <div class="container">
+          <h2 class="section-title">مشاريع تحت الإنشاء</h2>
+          <div class="projects-grid">
+            {projects.underConstruction.map(project => (
+              <ProjectCard project={{...project, status: 'under-construction'}} />
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </Layout>
 
 <style>
-  /* Override the global layout padding for this page only */
-  :global(main) {
-    padding-top: 7rem !important; /* Adjust this value to be just below the header */
+  .projects-page {
+    padding-bottom: 4rem;
   }
 
-  .page-content {
-    padding-bottom: 5rem;
-  }
-
-  .content-wrapper {
-    max-width: 1200px; /* Wider container for project display */
-    margin: 0 auto;
-    padding: 2.5rem;
-    text-align: center;
+  .page-header {
+    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
+    color: var(--text-light);
+    text-align: right; /* Align text to the right */
+    padding: 160px 0 80px 0;
   }
 
   .page-title {
     font-size: 3.5rem;
-    color: rgb(var(--primary));
-    margin-bottom: 4rem;
-    font-weight: bold;
+    color: #fff;
+    margin-bottom: 1rem;
   }
 
-  .projects-category {
-    margin-bottom: 5rem;
+  .page-subtitle {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0; /* Remove auto margin */
+    opacity: 0.95;
   }
 
-  .projects-category:first-of-type {
-      margin-top: 0;
+  .page-content {
+    padding: 0;
   }
 
-  /* Make the project cards full width on this page for better focus */
-  :global(.projects-category .grid) {
-    grid-template-columns: 1fr; /* Stack cards vertically */
-    gap: 3rem;
+  .projects-section {
+    padding: 4rem 0;
   }
 
+  .delivered-section {
+      background-color: var(--background);
+  }
+  .under-construction-section {
+      background-color: #fff; /* Make this section slightly different */
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.8rem;
+    margin-bottom: 3rem;
+    color: var(--primary);
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 120px 0 60px 0;
+    }
+    .page-title {
+      font-size: 2.8rem;
+    }
+    .section-title {
+        font-size: 2.2rem;
+    }
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+  }
 </style>
