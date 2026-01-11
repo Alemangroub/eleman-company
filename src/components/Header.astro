@@ -1,10 +1,18 @@
 ---
 import NavLink from './NavLink.astro';
 import Search from './Search.astro';
+const companyName = "شركة الايمان للاستثمار والتطوير العقاري";
+const words = companyName.split(' ');
 --- 
 <header class="site-header">
     <div class="company-name">
-        <h2><a href="/">شركة الايمان للاستثمار والتطوير العقاري</a></h2>
+        <h2>
+            <a href="/">
+                {words.map((word, index) => (
+                    <span style={`transition-delay: ${index * 0.05}s`}>{word}&nbsp;</span>
+                ))}
+            </a>
+        </h2>
     </div>
     <div class="header-bottom-bar">
         <nav class="main-nav">
@@ -54,25 +62,17 @@ import Search from './Search.astro';
     .company-name a {
         color: #fff;
         text-decoration: none;
-        position: relative; /* Needed for the underline effect */
-        padding-bottom: 5px; /* Space for the underline */
+        display: inline-block;
     }
 
-    /* Underline effect */
-    .company-name a::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        width: 0;
-        height: 2px;
-        background-color: #8A2BE2; /* Purple color */
-        transition: all 0.3s ease-in-out;
-        transform: translateX(-50%);
+    .company-name a span {
+        display: inline-block;
+        transition: transform 0.3s ease, color 0.3s ease;
     }
 
-    .company-name a:hover::after {
-        width: 100%;
+    .company-name a:hover span {
+        transform: translateY(-5px);
+        color: #8A2BE2;
     }
 
     .header-bottom-bar {
