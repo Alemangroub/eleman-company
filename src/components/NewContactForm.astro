@@ -32,9 +32,8 @@
 
 <style>
   .contact-form-container {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     padding: 3rem;
     max-width: 800px;
@@ -45,13 +44,13 @@
   .contact-form-container h2 {
     font-size: 2.5rem;
     font-weight: 900;
-    color: #fff;
+    color: #000000;
     margin-bottom: 1rem;
     text-align: center;
   }
     
   .contact-form-container p {
-      color: #ccc;
+      color: #555555;
       margin-bottom: 2.5rem;
       text-align: center;
       line-height: 1.8;
@@ -67,7 +66,7 @@
   .contact-form label {
     display: block;
     font-size: 1rem;
-    color: #fff;
+    color: #000000;
     margin-bottom: 0.75rem;
     font-weight: 600;
   }
@@ -78,30 +77,30 @@
     width: 100%;
     padding: 1rem;
     font-size: 1rem;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    color: #fff;
+    color: #000000;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
   }
 
   .contact-form input::placeholder,
   .contact-form textarea::placeholder {
-    color: #999;
+    color: #555555;
   }
 
   .contact-form input:focus,
   .contact-form textarea:focus,
   .contact-form select:focus {
     outline: none;
-    border-color: #ffd700;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    border-color: #8A2BE2;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
   }
   
   .contact-form select {
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9%200-5-1.8-9.2-5.4-12.7z%22/%3E%3C/svg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.6-3.6%205.4-7.9%205.4-12.9%200-5-1.8-9.2-5.4-12.7z%22/%3E%3C/svg%3E');
     background-repeat: no-repeat;
     background-position: left 1rem center;
     background-size: .8em auto;
@@ -110,8 +109,8 @@
   }
 
   .contact-form select option {
-    background: #333;
-    color: #fff;
+    background: #ffffff;
+    color: #000000;
   }
 
   .contact-form textarea {
@@ -124,18 +123,18 @@
     padding: 1rem;
     font-size: 1.2rem;
     font-weight: 700;
-    color: #111;
-    background: linear-gradient(90deg, #ffd700, #ffc700);
+    color: #ffffff;
+    background: linear-gradient(90deg, #8A2BE2, #9932CC);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.3s, box-shadow 0.3s;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
   .submit-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 7px 25px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 7px 25px rgba(138, 43, 226, 0.4);
   }
 
   @media (max-width: 768px) {

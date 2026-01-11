@@ -31,28 +31,28 @@ import Layout from '../layouts/Layout.astro';
         </div>
       </div>
 
-      <div class="info-section glass-card">
+      <div class="info-section card-style">
         <h2>من نحن؟</h2>
         <p>
           نحن شركة رائدة في مجال التطوير العقاري في صعيد مصر، نجمع بين الخبرة الطويلة والرؤية العصرية لإنشاء مشاريع تتجاوز توقعات عملائنا. منذ تأسيسنا، ونحن ملتزمون بأعلى معايير الجودة والابتكار، ونسعى لبناء مجتمعات مستدامة في قلب صعيد مصر.
         </p>
       </div>
 
-      <div class="info-section glass-card stacked-card">
+      <div class="info-section card-style stacked-card">
         <h2>رؤيتنا</h2>
         <p>
           أن نكون الشركة الرائدة والمطور العقاري الأكثر ثقة في صعيد مصر، من خلال تقديم مشاريع مبتكرة ومستدامة تعيد تعريف معايير جودة الحياة في المنطقة.
         </p>
       </div>
 
-      <div class="info-section glass-card stacked-card">
+      <div class="info-section card-style stacked-card">
         <h2>رسالتنا</h2>
         <p>
           تطوير مجتمعات عمرانية متكاملة تتجاوز توقعات عملائنا، عبر توظيف فريق من الخبراء، وتطبيق أحدث التقنيات الهندسية، والالتزام الراسخ بقيمنا التي تضع العميل دائمًا في المقدمة.
         </p>
       </div>
 
-      <div class="info-section glass-card stacked-card">
+      <div class="info-section card-style stacked-card">
         <h2>قيمنا الأساسية</h2>
         <ul class="values-list">
           <li><strong>الجودة:</strong> نلتزم بأعلى معايير الجودة في كل تفاصيل مشاريعنا.</li>
@@ -72,7 +72,7 @@ import Layout from '../layouts/Layout.astro';
   }
   
   .content-wrapper {
-    max-width: 1000px; /* Increased max-width for dual video layout */
+    max-width: 1000px;
     margin: 0 auto;
     padding: 2.5rem;
     text-align: center;
@@ -81,7 +81,7 @@ import Layout from '../layouts/Layout.astro';
   h1 {
     font-size: 3.5rem;
     font-weight: 700;
-    color: white;
+    color: #000000;
     margin-bottom: 3rem;
   }
 
@@ -95,16 +95,13 @@ import Layout from '../layouts/Layout.astro';
     margin-bottom: 2.5rem;
     padding: 1rem 2.5rem;
     border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+    border: 1px solid #eeeeee;
   }
 
   .title-card h2 {
     font-size: 2.2rem;
-    color: white;
+    color: #000000;
     margin: 0;
     padding: 0;
     border-bottom: none;
@@ -113,19 +110,18 @@ import Layout from '../layouts/Layout.astro';
   .videos-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem; /* Gap between the two videos */
+    gap: 1.5rem;
   }
 
   .video-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
     max-width: 100%;
-    background: #000;
     border-radius: 12px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eeeeee;
   }
 
   .video-container iframe {
@@ -137,10 +133,10 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .info-section {
-    max-width: 800px; /* Keep the text sections narrower for readability */
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    text-align: right; /* RTL text alignment */
+    text-align: right;
     line-height: 1.9;
     padding: 2rem;
     border-radius: 12px;
@@ -151,18 +147,15 @@ import Layout from '../layouts/Layout.astro';
       margin-top: 0;
   }
 
-  /* Glassmorphism Card Style */
-  .glass-card {
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  .card-style {
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
 
   h2 {
     font-size: 2.5rem;
-    color: white;
+    color: #000000;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--accent);
     padding-bottom: 0.5rem;
@@ -171,14 +164,14 @@ import Layout from '../layouts/Layout.astro';
 
   p {
     font-size: 1.1rem;
-    color: #e0e0e0;
+    color: #555555;
   }
 
   .values-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    color: #e0e0e0;
+    color: #555555;
     font-size: 1.1rem;
   }
 
@@ -191,14 +184,13 @@ import Layout from '../layouts/Layout.astro';
   }
 
   .values-list strong {
-    color: white;
+    color: #000000;
     font-weight: 700;
   }
 
-  /* Responsive adjustments */
   @media (max-width: 768px) {
     .videos-grid {
-      grid-template-columns: 1fr; /* Stack videos on smaller screens */
+      grid-template-columns: 1fr;
       gap: 2rem;
     }
 

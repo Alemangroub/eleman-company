@@ -64,7 +64,8 @@ const currentYear = new Date().getFullYear();
 
 <style>
   .site-footer {
-    color: #fff;
+    background-color: #f9f9f9;
+    color: #000000;
     padding: 5rem 2rem;
     font-family: 'Cairo', sans-serif;
   }
@@ -81,26 +82,25 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-column {
-    background-color: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: #ffffff;
+    border: 1px solid #eeeeee;
     border-radius: 20px;
     padding: 2.5rem;
     text-align: right;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   }
 
   .footer-column:hover {
     transform: translateY(-8px);
-    background-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   }
 
   .footer-column h3 {
     font-size: 1.4rem;
     font-weight: 700;
     margin-bottom: 2rem;
-    color: #fff;
+    color: #000000;
     position: relative;
     padding-bottom: 1rem;
   }
@@ -112,7 +112,7 @@ const currentYear = new Date().getFullYear();
     right: 0;
     width: 40px;
     height: 3px;
-    background-color: #fff;
+    background-color: var(--accent);
     border-radius: 2px;
   }
 
@@ -120,7 +120,7 @@ const currentYear = new Date().getFullYear();
     font-size: 1rem;
     line-height: 1.9;
     margin-bottom: 1rem;
-    color: #e0e0e0;
+    color: #555555;
   }
 
   .footer-column ul {
@@ -130,22 +130,21 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-column a {
-    color: #e0e0e0;
+    color: #555555;
     text-decoration: none;
     transition: color 0.3s ease;
   }
 
   .footer-column a:hover {
-    color: #fff;
-    text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    color: var(--accent);
   }
 
   .newsletter-form {
     display: flex;
     border-radius: 50px;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
     max-width: 100%;
     margin-top: 1.5rem;
   }
@@ -157,26 +156,26 @@ const currentYear = new Date().getFullYear();
     font-size: 1rem;
     outline: none;
     background: transparent;
-    color: #fff;
+    color: #000000;
   }
 
   .newsletter-form input::placeholder {
-      color: #ccc;
+      color: #999999;
   }
 
   .newsletter-form button {
-    background-color: #fff;
-    color: #1a1a1a;
+    background-color: var(--accent);
+    color: #ffffff;
     border: none;
     padding: 0.8rem 1.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
     font-weight: bold;
     font-size: 1rem;
   }
 
   .newsletter-form button:hover {
-    background-color: #f0f0f0;
+    background-color: var(--accent-dark);
   }
 
   .contact-info li {
@@ -194,21 +193,21 @@ const currentYear = new Date().getFullYear();
   }
 
   .contact-info svg {
-    color: #fff;
-    fill: #fff;
+    color: var(--accent);
+    fill: var(--accent);
     flex-shrink: 0;
   }
 
   .footer-bottom {
     margin: 4rem auto 0 auto;
     padding-top: 2.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid #eeeeee;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
     text-align: center;
-    color: #e0e0e0;
+    color: #555555;
   }
   
   .social-icons {
@@ -217,12 +216,12 @@ const currentYear = new Date().getFullYear();
   }
 
   .social-icons a {
-    color: #e0e0e0;
+    color: #555555;
     transition: color 0.3s ease, transform 0.3s ease;
   }
 
   .social-icons a:hover {
-    color: #fff;
+    color: var(--accent);
     transform: scale(1.1);
   }
 
