@@ -104,4 +104,26 @@ const words = companyName.split(' ');
         stroke: #25D366;
         transform: scale(1.1);
     }
+
+    @media (max-width: 768px) {
+        .site-header {
+            padding: 1rem;
+            position: static; /* Change position to static for mobile */
+        }
+
+        .header-bottom-bar {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .main-nav {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .company-name h2 {
+            font-size: 1.5rem;
+        }
+    }
 </style>
