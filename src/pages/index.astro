@@ -39,7 +39,7 @@ import { projects } from '../data/projects.js';
 		text-align: center;
 		padding: 4rem 2rem;
         padding-top: 220px; 
-		background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
+		background-color: transparent; /* Removed the blue gradient */
 	}
 
 	.hero-content {
@@ -51,12 +51,12 @@ import { projects } from '../data/projects.js';
 		font-size: 4.5rem;
 		font-weight: 900;
 		margin-bottom: 1rem;
-		color: #fff;
+		color: var(--primary); /* Changed from #fff */
 	}
 
 	.subtitle {
 		font-size: 1.5rem;
-		color: #fff;
+		color: var(--text-dark); /* Changed from #fff */
 		margin-bottom: 2rem;
 	}
 

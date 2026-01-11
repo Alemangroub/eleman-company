@@ -58,21 +58,21 @@ const { contact } = pageContent;
   }
 
   .page-header {
-    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
-    color: var(--text-light);
+    background-color: transparent; /* Removed blue gradient */
     text-align: right;
     padding: 160px 0 80px 0;
   }
 
   .page-title {
     font-size: 3.5rem;
-    color: #fff;
+    color: var(--primary); /* Changed from #fff */
     margin-bottom: 1rem;
   }
 
   .page-subtitle {
     font-size: 1.2rem;
     max-width: 800px;
+    color: var(--text-dark); /* Changed from #fff */
     opacity: 0.95;
   }
 
