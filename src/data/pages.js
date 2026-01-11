@@ -46,9 +46,10 @@ export const pageContent = {
     info: {
       title: 'معلومات التواصل',
       description: 'يمكنك زيارتنا في مكتبنا، أو التواصل معنا عبر الهاتف أو البريد الإلكتروني خلال ساعات العمل الرسمية.',
-      address: 'شارع الجمهورية، المنصورة، الدقهلية، مصر',
+      address: 'مصر، سوهاج، طما، اعلي بنك القاهره',
+      addressLink: 'https://maps.app.goo.gl/HWD49tghryp1uequ9',
       email: 'info@al-iman.dev',
-      phone: '+20 123 456 7890'
+      phone: '+201002672901'
     },
     form: {
         title: 'أرسل لنا رسالة'

@@ -29,16 +29,22 @@ const today = new Date();
         <h3 class="footer-title">تواصل معنا</h3>
         <ul class="contact-list">
             <li>
-                <span class="icon location"></span>
-                <span>مصر، سوهاج، طما، أعلى بنك القاهرة</span>
+                <a href="https://maps.app.goo.gl/HWD49tghryp1uequ9" target="_blank">
+                    <span class="icon location"></span>
+                    <span>مصر، سوهاج، طما، اعلي بنك القاهره</span>
+                </a>
             </li>
             <li>
-                <span class="icon whatsapp"></span>
-                <a href="https://wa.me/201002672901" target="_blank">واتساب</a>
+                <a href="https://wa.me/201002672901" target="_blank">
+                    <span class="icon whatsapp"></span>
+                    <span>واتساب</span>
+                </a>
             </li>
             <li>
-                <span class="icon email"></span>
-                <a href="mailto:info@al-iman.dev">info@al-iman.dev</a>
+                <a href="mailto:info@al-iman.dev">
+                    <span class="icon email"></span>
+                    <span>info@al-iman.dev</span>
+                </a>
             </li>
         </ul>
       </div>
@@ -173,14 +179,13 @@ const today = new Date();
   }
 
   .contact-list li {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--text-dark);
     font-size: 1rem;
   }
 
   .contact-list a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     color: var(--text-dark);
     text-decoration: none;
     transition: color 0.3s ease;

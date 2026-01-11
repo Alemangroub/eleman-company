@@ -21,7 +21,7 @@ const { contact } = pageContent;
             <h2 class="section-title">{contact.info.title}</h2>
             <p>{contact.info.description}</p>
             <ul>
-              <li><strong><i class="icon">📍</i> العنوان:</strong> {contact.info.address}</li>
+              <li><strong><i class="icon">📍</i> العنوان:</strong> <a href={contact.info.addressLink} target="_blank">{contact.info.address}</a></li>
               <li><strong><i class="icon">📧</i> البريد الإلكتروني:</strong> <a href={`mailto:${contact.info.email}`}>{contact.info.email}</a></li>
               <li><strong><i class="icon">📞</i> الهاتف:</strong> <a href={`tel:${contact.info.phone}`}>{contact.info.phone}</a></li>
             </ul>
