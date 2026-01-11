@@ -1,0 +1,33 @@
+---
+// src/components/UnderConstructionProjects.astro
+const projects = [
+  {
+    title: 'برج الرحاب',
+    image: 'https://i.postimg.cc/DZGXj4Sz/brj-alrhab.webp',
+    status: 'قيد الإنشاء'
+  },
+  {
+    title: 'برج الصعيدي',
+    image: 'https://i.postimg.cc/XvGGqBcw/brj-alsʿydy.webp',
+    status: 'قيد الإنشاء'
+  }
+];
+---
+
+<section class="uc-projects-section">
+  <h2 class="section-title">مشاريع قيد الإنشاء</h2>
+  <p class="section-subtitle">نظرة على المستقبل الذي نبنيه اليوم</p>
+  <div class="projects-grid">
+    {projects.map(project => (
+      <div class="project-card">
+        <div class="card-content">
+          <img src={project.image} alt={project.title} class="project-image" />
+          <div class="project-info">
+            <h3>{project.title}</h3>
+            <span class="status-badge">{project.status}</span>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

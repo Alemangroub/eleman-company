@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ProjectsSection from '../components/ProjectsSection.astro';
+import UnderConstructionProjects from '../components/UnderConstructionProjects.astro';
+---
+
+<Layout title="مشاريعنا">
+  <div class="page-content">
+    <div class="content-wrapper">
+      <h1 class="page-title">أبرز مشاريعنا</h1>
+
+      <div class="projects-category">
+        <ProjectsSection />
+      </div>
+
+      <div class="projects-category">
+        <UnderConstructionProjects />
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* Override the global layout padding for this page only */
+  :global(main) {
+    padding-top: 7rem !important; /* Adjust this value to be just below the header */
+  }
+
+  .page-content {
+    padding-bottom: 5rem;
+  }
+
+  .content-wrapper {
+    max-width: 1200px; /* Wider container for project display */
+    margin: 0 auto;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 4rem;
+    font-weight: bold;
+  }
+
+  .projects-category {
+    margin-bottom: 5rem;
+  }
+
+  .projects-category:first-of-type {
+      margin-top: 0;
+  }
+
+  /* Make the project cards full width on this page for better focus */
+  :global(.projects-category .grid) {
+    grid-template-columns: 1fr; /* Stack cards vertically */
+    gap: 3rem;
+  }
+
+</style>

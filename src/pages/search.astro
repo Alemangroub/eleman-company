@@ -1,0 +1,215 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { projects } from '../data/projects.js';
+
+const query = Astro.url.searchParams.get('q') || '';
+
+// --- DYNAMICALLY BUILD THE SEARCH INDEX ---
+const deliveredProjectsContent = projects.delivered.map(p => p.name).join(', ');
+const underConstructionProjectsContent = projects.underConstruction.map(p => p.name).join(', ');
+
+const searchIndex = [
+  {
+    url: '/',
+    title: 'الرئيسية - بنيان يرسخ الثقة',
+    content: `شركة الايمان للتطوير العقاري. بنيان يرسخ الثقة. نصنع معالم الغد، ونصمم مشاريع عقارية استثنائية تلهم الحياة وتصنع الفرص. مشاريع تم تسليمها مثل ${deliveredProjectsContent}. ومشاريع تحت الانشاء مثل ${underConstructionProjectsContent}.`
+  },
+  {
+    url: '/about',
+    title: 'من نحن - نبني الثقة ونشيد المستقبل',
+    content: 'نحن شركة رائدة في مجال التطوير العقاري، نجمع بين الخبرة الطويلة والرؤية العصرية لإنشاء مشاريع تتجاوز توقعات عملائنا. رؤيتنا أن نكون المطور العقاري الأكثر ثقة في صعيد مصر.'
+  },
+  {
+    url: '/contact',
+    title: 'تواصل معنا',
+    content: 'نحن هنا للإجابة على جميع استفساراتك. عنوان المكتب بشارع الجمهورية، المنصورة. البريد الإلكتروني والهاتف متاحان للتواصل.'
+  },
+  {
+      url: '/#projects',
+      title: 'مشاريع تم تسليمها',
+      content: `مشاريعنا السابقة شهادة على التزامنا بالجودة والفخامة: ${deliveredProjectsContent}`
+  },
+  {
+      url: '/#under-construction',
+      title: 'مشاريع تحت الإنشاء',
+      content: `مشاريع مستقبلية واعدة تواصل مسيرة الإبداع والتميز: ${underConstructionProjectsContent}`
+  }
+];
+---
+
+<Layout title={`نتائج البحث عن: ${query}`}>
+  <main class="search-results-page">
+    <div class="container">
+      <header class="search-header">
+        <h1>نتائج البحث</h1>
+        <p>أنت تبحث عن: <span class="query-term"></span></p>
+      </header>
+
+      <div id="results-container" class="results-grid"></div>
+
+      <div id="no-results" class="no-results-message" style="display: none;">
+        <h2>لم يتم العثور على نتائج</h2>
+        <p>عذرًا، لم نتمكن من العثور على أي نتائج لكلمة البحث هذه. جرب البحث بكلمات أخرى.</p>
+      </div>
+    </div>
+  </main>
+
+  <script define:vars={{ searchIndex }}>
+    function performSearch() {
+      const queryTermEl = document.querySelector('.query-term');
+      const resultsContainer = document.getElementById('results-container');
+      const noResultsMessage = document.getElementById('no-results');
+      const searchHeader = document.querySelector('.search-header');
+
+      resultsContainer.innerHTML = '';
+      noResultsMessage.style.display = 'none';
+      if(searchHeader) searchHeader.style.display = 'block';
+
+      const query = new URLSearchParams(window.location.search).get('q')?.toLowerCase() || '';
+      
+      if (queryTermEl) queryTermEl.textContent = query;
+
+      if (!query) {
+        if(searchHeader) searchHeader.style.display = 'none';
+        return; 
+      }
+
+      const searchResults = searchIndex.filter(page => {
+        const titleMatch = page.title.toLowerCase().includes(query);
+        const contentMatch = page.content.toLowerCase().includes(query);
+        return titleMatch || contentMatch;
+      });
+
+      if (searchResults.length > 0) {
+        searchResults.forEach(result => {
+          const resultCard = document.createElement('a');
+          resultCard.href = result.url;
+          resultCard.className = 'result-card';
+          
+          const title = document.createElement('h3');
+          title.textContent = result.title;
+          
+          const snippet = document.createElement('p');
+          const queryIndex = result.content.toLowerCase().indexOf(query);
+          let textSnippet = result.content.substring(0, 150) + '...';
+          if (queryIndex > -1) {
+              const start = Math.max(0, queryIndex - 40);
+              const end = Math.min(result.content.length, queryIndex + 110);
+              textSnippet = '... ' + result.content.substring(start, end).trim() + ' ...';
+          }
+          
+          snippet.innerHTML = textSnippet.replace(new RegExp(query, "gi"), (match) => `<mark>${match}</mark>`);
+
+          resultCard.appendChild(title);
+          resultCard.appendChild(snippet);
+          resultsContainer.appendChild(resultCard);
+        });
+      } else {
+        noResultsMessage.style.display = 'block';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', performSearch);
+    document.addEventListener('astro:after-swap', performSearch);
+
+  </script>
+
+  <style>
+    .search-results-page {
+      padding-top: 8rem;
+      padding-bottom: 4rem;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .search-header {
+      text-align: center;
+      margin-bottom: 4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 2rem;
+    }
+
+    .search-header h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+    }
+
+    .search-header p {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+
+    .query-term {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    .results-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .result-card {
+      display: block;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 2rem;
+      text-decoration: none;
+      color: #fff;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .result-card:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .result-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 0.75rem;
+    }
+
+    .result-card p {
+      font-size: 1rem;
+      color: #ccc;
+      line-height: 1.7;
+    }
+    
+    .result-card mark {
+        background: #ffd700;
+        color: #000;
+        padding: 0.1em 0.2em;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+
+    .no-results-message {
+      text-align: center;
+      padding: 4rem 2rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+    }
+
+    .no-results-message h2 {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+
+    .no-results-message p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+  </style>
+</Layout>

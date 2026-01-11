@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="من نحن">
+  <div class="page-content">
+    <div class="content-wrapper">
+      <h1>نحن نبني الثقة... ونشيد المستقبل</h1>
+
+      <div class="info-section glass-card">
+        <h2>من نحن؟</h2>
+        <p>
+          نحن شركة رائدة في مجال التطوير العقاري، نجمع بين الخبرة الطويلة والرؤية العصرية لإنشاء مشاريع تتجاوز توقعات عملائنا. منذ تأسيسنا، ونحن ملتزمون بأعلى معايير الجودة والابتكار، ونسعى لبناء مجتمعات مستدامة ومستقبل مشرق للأجيال القادمة.
+        </p>
+      </div>
+
+      <div class="info-section glass-card stacked-card">
+        <h2>رؤيتنا</h2>
+        <p>
+          أن نكون الشركة الرائدة والمطور العقاري الأكثر ثقة في صعيد مصر، من خلال تقديم مشاريع مبتكرة ومستدامة تعيد تعريف معايير جودة الحياة.
+        </p>
+      </div>
+
+      <div class="info-section glass-card stacked-card">
+        <h2>رسالتنا</h2>
+        <p>
+          تطوير مجتمعات عمرانية متكاملة تتجاوز توقعات عملائنا، عبر توظيف فريق من الخبراء، وتطبيق أحدث التقنيات الهندسية، والالتزام الراسخ بقيمنا التي تضع العميل دائمًا في المقدمة.
+        </p>
+      </div>
+
+      <div class="info-section glass-card stacked-card">
+        <h2>قيمنا الأساسية</h2>
+        <ul class="values-list">
+          <li><strong>الجودة:</strong> نلتزم بأعلى معايير الجودة في كل تفاصيل مشاريعنا.</li>
+          <li><strong>النزاهة:</strong> نبني الثقة من خلال الشفافية والمصداقية المطلقة.</li>
+          <li><strong>العميل أولاً:</strong> احتياجات عملائنا ورضاهم هي محور اهتمامنا.</li>
+          <li><strong>الابتكار:</strong> نسعى باستمرار لتبني أفكار جديدة وتقنيات حديثة.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  /* Override the global layout padding for this page only */
+  :global(main) {
+    padding-top: 7rem !important; /* Adjust this value to be just below the header */
+  }
+
+  .page-content {
+    padding-bottom: 5rem;
+  }
+  
+  .content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 3rem; /* Re-adjusted margin */
+  }
+
+  .info-section {
+    text-align: right; /* RTL text alignment */
+    line-height: 1.9;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2rem; /* Add space between the sections */
+  }
+
+  .info-section:first-of-type {
+      margin-top: 0;
+  }
+
+  /* Glassmorphism Card Style */
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #e0e0e0;
+  }
+
+  .values-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: #e0e0e0;
+    font-size: 1.1rem;
+  }
+
+  .values-list li {
+    margin-bottom: 1rem;
+  }
+
+  .values-list li:last-child {
+    margin-bottom: 0;
+  }
+
+  .values-list strong {
+    color: white;
+    font-weight: 700;
+  }
+</style>
