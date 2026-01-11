@@ -4,7 +4,7 @@ import Search from './Search.astro';
 --- 
 <header class="site-header">
     <div class="company-name">
-        <h2><a href="/" class="pulsating-glow">شركة الايمان للاستثمار والتطوير العقاري</a></h2>
+        <h2><a href="/">شركة الايمان للاستثمار والتطوير العقاري</a></h2>
     </div>
     <div class="header-bottom-bar">
         <nav class="main-nav">
@@ -50,38 +50,29 @@ import Search from './Search.astro';
         font-weight: 900;
         margin: 0;
     }
-
-    /* NEW: Pulsating Glow Effect */
-    .company-name a.pulsating-glow {
+    
+    .company-name a {
         color: #fff;
         text-decoration: none;
-        animation: pulsating-glow-animation 3s infinite ease-in-out;
-        transition: transform 0.3s ease, text-shadow 0.3s ease;
+        position: relative; /* Needed for the underline effect */
+        padding-bottom: 5px; /* Space for the underline */
     }
 
-    .company-name a.pulsating-glow:hover {
-        animation-play-state: paused;
-        text-shadow:
-            0 0 5px #fff,
-            0 0 15px #fff,
-            0 0 25px #ffd700,
-            0 0 40px #ffd700;
-        transform: scale(1.03);
+    /* Underline effect */
+    .company-name a::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background-color: #8A2BE2; /* Purple color */
+        transition: all 0.3s ease-in-out;
+        transform: translateX(-50%);
     }
 
-    @keyframes pulsating-glow-animation {
-        0% {
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-        }
-        50% {
-            text-shadow:
-                0 0 8px #fff,
-                0 0 18px #ffd700,
-                0 0 28px #ffd700;
-        }
-        100% {
-            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-        }
+    .company-name a:hover::after {
+        width: 100%;
     }
 
     .header-bottom-bar {
