@@ -1,46 +1,26 @@
 ---
-// src/components/ProjectsSection.astro
+import { projects } from '../data/projects.js';
 ---
 
-<section class="projects-section">
+<section id="projects" class="projects-section">
   <h2 class="section-title">مشاريع تم تنفيذها</h2>
   <div class="projects-grid">
-    <!-- Project Card 1: Gaza Tower -->
-    <div class="project-card">
-      <div class="card-content">
-        <img src="https://i.postimg.cc/yY1Hvq56/brj-ghzh.jpg" alt="برج غزة" class="project-image" />
-        <div class="project-info">
-          <h3>برج غزة</h3>
-          <a href="#" class="details-button">عرض التفاصيل</a>
+    {projects.delivered.map(project => (
+      <div class="project-card">
+        <div class="card-content">
+          <img src={project.image} alt={project.name} class="project-image" />
+          <div class="project-info">
+            <h3>{project.name}</h3>
+            <a href={`/project/${project.slug}`} class="details-button">عرض التفاصيل</a>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Project Card 2: Makkah Tower -->
-    <div class="project-card">
-      <div class="card-content">
-        <img src="https://i.postimg.cc/qMJTjfYp/brj-mkh.jpg" alt="برج مكة" class="project-image" />
-        <div class="project-info">
-          <h3>برج مكة</h3>
-          <a href="#" class="details-button">عرض التفاصيل</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Project Card 3: Al-Aqsa Tower -->
-    <div class="project-card">
-      <div class="card-content">
-        <img src="https://i.postimg.cc/NfscphVg/brj-alaqsy.jpg" alt="برج الأقصى" class="project-image" />
-        <div class="project-info">
-          <h3>برج الأقصى</h3>
-          <a href="#" class="details-button">عرض التفاصيل</a>
-        </div>
-      </div>
-    </div>
+    ))}
   </div>
 </section>
 
 <style>
+  /* Styles are now identical to UnderConstructionProjects.astro */
   .projects-section {
     padding: 5rem 2rem;
     text-align: center;
@@ -52,7 +32,7 @@
     font-weight: 900;
     position: relative;
     padding-bottom: 1.5rem;
-    margin-bottom: 4rem; /* Increased margin to compensate for removed subtitle */
+    margin-bottom: 4rem;
   }
 
   .section-title::after {
@@ -63,7 +43,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background-color: #fff;
+    background-color: #ffd700; /* Gold accent to match the other section */
     border-radius: 2px;
   }
 
@@ -76,16 +56,17 @@
   }
 
   .project-card {
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
   .project-card:hover {
     transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
   }
 
   .card-content {
     height: 100%;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -93,12 +74,12 @@
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Ensures image corners are rounded */
+    overflow: hidden;
     transition: background-color 0.3s ease;
   }
 
   .project-card:hover .card-content {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .project-image {
@@ -114,6 +95,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    margin-top: auto; /* Pushes info to the bottom */
   }
 
   .project-info h3 {
@@ -123,18 +105,19 @@
   }
 
   .details-button {
-    background-color: transparent;
-    border: 1px solid #fff;
-    color: #fff;
+    background-color: #ffd700;
+    border: 1px solid #ffd700;
+    color: #1a1a1a;
     padding: 0.5rem 1rem;
     border-radius: 50px;
     text-decoration: none;
     font-size: 0.9rem;
+    font-weight: bold;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .details-button:hover {
-    background-color: #fff;
-    color: #1a1a1a;
+    background-color: transparent;
+    color: #ffd700;
   }
 </style>

@@ -10,3 +10,5 @@ export default defineConfig({
     plugins: [tailwindcss()]
   }
 });
+
+// Force server restart
