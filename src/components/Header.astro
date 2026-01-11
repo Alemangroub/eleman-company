@@ -4,102 +4,113 @@ import Search from './Search.astro';
 const companyName = "شركة الايمان للاستثمار والتطوير العقاري";
 const words = companyName.split(' ');
 --- 
-<header class="site-header">
-    <div class="top-bar">
-        <div class="company-name">
-            <h2>
-                <a href="/">
+<header id="main-header" class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo-container">
+                <a href="/" class="company-logo">
                     {words.map((word, index) => (
                         <span style={`transition-delay: ${index * 0.05}s`}>{word}&nbsp;</span>
                     ))}
                 </a>
-            </h2>
-        </div>
-        <button class="hamburger-menu" aria-label="Toggle menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        </button>
-    </div>
-    <div class="header-bottom-bar">
-        <nav class="main-nav">
-            <NavLink href="/" text="الرئيسية" />
-            <NavLink href="/about" text="من نحن" />
-            <NavLink href="/projects" text="مشاريعنا" />
-            <NavLink href="/contact" text="اتصل بنا" />
-        </nav>
-        <div class="header-actions">
-            <Search />
-            <a href="https://wa.me/+201002672901" class="whatsapp-icon" target="_blank" aria-label="تواصل معنا عبر واتساب">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-            </a>
+            </div>
+
+            <div class="nav-and-actions">
+                <nav class="main-nav">
+                    <NavLink href="/" text="الرئيسية" />
+                    <NavLink href="/about" text="من نحن" />
+                    <NavLink href="/projects" text="مشاريعنا" />
+                    <NavLink href="/contact" text="اتصل بنا" />
+                </nav>
+                <div class="header-actions">
+                    <Search />
+                    <a href="https://wa.me/+201002672901" class="whatsapp-icon" target="_blank" aria-label="تواصل معنا عبر واتساب">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </a>
+                </div>
+            </div>
+
+            <button class="hamburger-menu" aria-label="Toggle menu" aria-expanded="false">
+                <svg class="hamburger-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         </div>
     </div>
 </header>
 
 <script>
     const hamburger = document.querySelector('.hamburger-menu');
-    const navMenu = document.querySelector('.header-bottom-bar');
+    const navAndActions = document.querySelector('.nav-and-actions');
+    const header = document.getElementById('main-header');
 
     hamburger.addEventListener('click', () => {
-        navMenu.classList.toggle('is-active');
+        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!isExpanded));
+        navAndActions.classList.toggle('is-active');
+        header.classList.toggle('is-active');
+        document.body.classList.toggle('no-scroll');
     });
 </script>
 
 <style>
     .site-header {
-        background-color: rgba(255, 255, 255, 0.1);
-        padding: 1rem 2rem;
+        background-color: transparent;
+        padding: 1rem 0;
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 10;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        box-sizing: border-box;
+        z-index: 1000;
+        transition: background-color 0.3s ease, padding 0.3s ease;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .top-bar {
+    .site-header.is-scrolled {
+        background-color: rgba(15, 23, 42, 0.8);
+        padding: 0.5rem 0;
+        position: fixed;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .header-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        width: 100%;
-        margin-bottom: 1rem; /* Space between name and nav */
     }
 
-    .company-name h2 {
-        font-size: 1.8rem;
-        font-weight: 900;
-        margin: 0;
-    }
-    
-    .company-name a {
+    .company-logo {
         color: #fff;
         text-decoration: none;
-        display: inline-block;
+        font-size: 1.5rem;
+        font-weight: 900;
     }
 
-    .company-name a span {
+    .company-logo span {
         display: inline-block;
         transition: transform 0.3s ease, color 0.3s ease;
     }
 
-    .company-name a:hover span {
-        transform: translateY(-5px);
-        color: #8A2BE2;
+    .company-logo:hover span {
+        transform: translateY(-3px) scale(1.05);
+        color: #c792ea;
     }
 
-    .header-bottom-bar {
+    .nav-and-actions {
         display: flex;
-        justify-content: center;
         align-items: center;
-        width: 100%;
         gap: 2rem;
     }
 
     .main-nav {
         display: flex;
-        gap: 2rem;
+        gap: 2.5rem;
     }
     
     .header-actions {
@@ -111,68 +122,92 @@ const words = companyName.split(' ');
     .whatsapp-icon svg {
         stroke: #fff;
         transition: stroke 0.3s ease, transform 0.3s ease;
-        filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.4));
     }
 
     .whatsapp-icon:hover svg {
         stroke: #25D366;
-        transform: scale(1.1);
+        transform: scale(1.15);
     }
     
     .hamburger-menu {
-        display: none; /* Hidden by default */
+        display: none;
         background: none;
         border: none;
         cursor: pointer;
         padding: 0;
-        z-index: 11; /* Ensure it's above other elements */
+        z-index: 1001;
+    }
+
+    .hamburger-icon,
+    .close-icon {
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+    
+    .close-icon {
+        display: none;
+    }
+
+    .hamburger-menu[aria-expanded="true"] .hamburger-icon {
+        display: none;
+    }
+    .hamburger-menu[aria-expanded="true"] .close-icon {
+        display: block;
+    }
+
+    @media (max-width: 1024px) {
+        .main-nav {
+            gap: 1.5rem;
+        }
+        .company-logo {
+            font-size: 1.3rem;
+        }
     }
 
     @media (max-width: 768px) {
-        .site-header {
-            padding: 1rem;
-            position: static;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .top-bar {
-            margin-bottom: 0;
-        }
-
         .hamburger-menu {
-            display: block; /* Show hamburger on mobile */
+            display: block;
         }
 
-        .header-bottom-bar {
-            display: none; /* Hide nav by default on mobile */
+        .nav-and-actions {
+            display: none;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            background-color: rgba(15, 23, 42, 0.95); /* Dark background for sidebar */
-            position: absolute;
-            top: 70px; /* Position below header */
+            justify-content: center;
+            gap: 2.5rem;
+            position: fixed;
+            top: 0;
             left: 0;
-            right: 0;
-            padding: 2rem 0;
-            gap: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(10px);
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
         
-        .header-bottom-bar.is-active {
-            display: flex; /* Show when active */
+        .nav-and-actions.is-active {
+            display: flex;
+            transform: translateX(0);
         }
 
         .main-nav {
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
             text-align: center;
-            width: 100%;
+        }
+        
+        .header-actions {
+            flex-direction: column;
+            gap: 2rem;
         }
 
-        .company-name h2 {
-            font-size: 1.4rem;
+        .site-header.is-active {
+            background-color: transparent;
+            border-bottom: none;
+        }
+
+        body.no-scroll {
+            overflow: hidden;
         }
     }
 </style>

@@ -5,18 +5,27 @@ import ProjectCard from '../components/ProjectCard.astro';
 // Server-side search logic
 const query = Astro.url.searchParams.get('q')?.toLowerCase() || '';
 
-// Fetch all project pages
-const allProjects = await Astro.glob('./project/*.astro');
+// Use import.meta.glob for modern, performant dynamic imports
+const projectImports = import.meta.glob('./project/*.astro');
+
+// Process all project content
+const allProjects = await Promise.all(
+  Object.values(projectImports).map(async (projectImport) => {
+    const project = await projectImport();
+    return project;
+  })
+);
 
 const searchResults = allProjects.filter(project => {
   if (!query) return false;
-  
+
   const titleMatch = project.frontmatter.title.toLowerCase().includes(query);
   const descriptionMatch = project.frontmatter.description.toLowerCase().includes(query);
-  // You could also add a check against post.rawContent() for full-text search
-  // const contentMatch = project.rawContent().toLowerCase().includes(query);
+  
+  // Full-text search against the rendered content of the project page
+  const contentMatch = project.compiledContent().toLowerCase().includes(query);
 
-  return titleMatch || descriptionMatch;
+  return titleMatch || descriptionMatch || contentMatch;
 });
 ---
 
@@ -54,7 +63,7 @@ const searchResults = allProjects.filter(project => {
       ) : (
         <div class="no-query-message">
             <h2>ابحث في مشاريعنا</h2>
-            <p>استخدم شريط البحث في الأعلى للعثور على المشاريع حسب الاسم أو الوصف.</p>
+            <p>استخدم شريط البحث في الأعلى للعثور على المشاريع حسب الاسم أو الوصف أو المحتوى.</p>
         </div>
       )}
     </div>
@@ -65,7 +74,7 @@ const searchResults = allProjects.filter(project => {
   .search-results-page {
     padding: 8rem 0 4rem;
     color: #fff;
-    min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
+    min-height: calc(100vh - 120px);
   }
 
   .container {
