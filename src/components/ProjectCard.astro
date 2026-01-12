@@ -31,6 +31,15 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
 </div>
 
 <style>
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
   .project-card {
     display: flex;
     flex-direction: column;
@@ -39,15 +48,17 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
     border-radius: 15px;
     overflow: hidden;
     text-decoration: none;
-    color: rgb(var(--text-dark));
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    color: var(--text-dark);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border: 2px solid #DAA520;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
 
   .project-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 30px rgba(218, 165, 32, 0.4);
   }
 
   .card-link-wrapper {
@@ -89,11 +100,11 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
   }
 
   .status-delivered {
-    background-color: rgba(46, 204, 113, 0.7);
+    background-color: rgba(184, 134, 11, 0.7); /* Dark Goldenrod */
   }
 
   .status-under-construction {
-    background-color: rgba(243, 156, 18, 0.7);
+    background-color: rgba(218, 165, 32, 0.7); /* Goldenrod */
   }
 
   .card-content {
@@ -102,14 +113,16 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
   }
 
   .card-title {
-    font-size: 1.6rem; /* Increased font size */
+    font-size: 1.6rem;
     font-weight: 700;
     margin: 0 0 0.75rem;
-    display: inline-block; /* Important for gradient to work */
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    display: inline-block;
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    background-size: 200% auto;
+		animation: shine 5s linear infinite;
   }
 
   .card-description {
@@ -131,7 +144,7 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
     font-size: 0.9rem;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    background: linear-gradient(90deg, #B8860B, #DAA520);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -141,7 +154,7 @@ const statusClass = project.status === 'delivered' ? 'status-delivered' : 'statu
 
   .btn-details:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 5px 15px rgba(218, 165, 32, 0.4);
   }
 
 </style>

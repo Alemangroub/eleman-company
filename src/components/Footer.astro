@@ -21,7 +21,7 @@ const today = new Date();
       <!-- About Card -->
       <div class="footer-card">
         <h3 class="footer-title">بنيان يرسخ الثقة</h3>
-        <p>نصنع معالم الغد، ونصمم مشاريع عقارية استثنائية تلهم الحياة وتصنع الفرص.</p>
+        <p class="company-name-gradient">نصنع معالم الغد، ونصمم مشاريع عقارية استثنائية تلهم الحياة وتصنع الفرص.</p>
       </div>
 
       <!-- Contact Us Card -->
@@ -52,7 +52,7 @@ const today = new Date();
       <!-- Newsletter Card -->
       <div class="footer-card">
         <h3 class="footer-title">اشترك في نشرتنا الإخبارية</h3>
-        <p>كن على اطلاع دائم بآخر مشاريعنا وعروضنا الحصرية.</p>
+        <p class="company-name-gradient">كن على اطلاع دائم بآخر مشاريعنا وعروضنا الحصرية.</p>
         <form class="newsletter-form">
           <input type="email" placeholder="أدخل بريدك الإلكتروني" />
           <button type="submit">اشترك</button>
@@ -80,24 +80,20 @@ const today = new Date();
 </footer>
 
 <style>
-  :root {
-    --footer-bg: var(--background, #f0f4f8);
-    --card-bg: #ffffff;
-    --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    --title-color: var(--primary, #0b2d48);
-    --text-color: var(--text-muted, #718096);
-    --link-color: var(--text-dark, #2d3748);
-    --link-hover-color: var(--secondary, #3b82f6);
-    --accent: #d8648c;
-    --secondary: #3b82f6;
-    --underline-color: var(--accent, #d8648c);
-    --button-text-color: #fff;
-  }
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
 
   .site-footer {
-    background-color: var(--footer-bg);
+    background-color: var(--background);
     padding: 5rem 0 2rem 0;
     text-align: right;
+    color: var(--text-dark);
   }
 
   .footer-grid {
@@ -109,12 +105,12 @@ const today = new Date();
   }
 
   .footer-card {
-    background-color: var(--card-bg);
+    background-color: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     padding: 2.5rem;
-    box-shadow: var(--card-shadow);
     display: flex;
     flex-direction: column;
+    border: 1px solid #B8860B;
   }
 
   .footer-title {
@@ -123,10 +119,12 @@ const today = new Date();
     position: relative;
     display: inline-block;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
   }
 
   .footer-title::after {
@@ -136,11 +134,12 @@ const today = new Date();
     bottom: -10px;
     width: 50px;
     height: 3px;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    background: linear-gradient(90deg, #B8860B, #EACD65);
   }
 
-  .footer-card p {
-    color: var(--text-color);
+  .footer-card p:not(.company-name-gradient) {
+    color: var(--text-dark);
+    opacity: 0.8;
     line-height: 1.8;
     margin-bottom: 1rem;
     flex-grow: 1;
@@ -156,16 +155,17 @@ const today = new Date();
   }
 
   .footer-links li a {
-    color: var(--link-color);
+    color: #B8860B; /* Gold color for links */
     text-decoration: none;
     font-size: 1rem;
     margin-bottom: 0.8rem;
     display: inline-block;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
   }
 
   .footer-links li a:hover {
-    color: var(--link-hover-color);
+    color: #DAA520;
+    transform: translateX(-5px);
   }
 
   .contact-list {
@@ -186,30 +186,18 @@ const today = new Date();
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: var(--text-dark);
+    color: #B8860B; /* Gold color for contact links */
     text-decoration: none;
     transition: color 0.3s ease;
     font-weight: 700;
   }
 
   .contact-list a:hover {
-    color: var(--link-hover-color);
+    color: #DAA520;
   }
 
   .contact-list .icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .contact-list .icon.location, .contact-list .icon.email {
-    background-color: var(--accent, #d8648c);
-  }
-
-  .contact-list .icon.whatsapp {
-    background-color: transparent;
-    border: 2px solid var(--accent, #d8648c);
+    display: none; /* Hiding old icons for a cleaner look */
   }
 
   .newsletter-form {
@@ -217,7 +205,7 @@ const today = new Date();
     margin-top: auto;
     border-radius: 50px;
     overflow: hidden;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #B8860B;
   }
 
   .newsletter-form input {
@@ -226,7 +214,12 @@ const today = new Date();
     padding: 0.8rem 1.2rem;
     font-size: 1rem;
     background-color: transparent;
+    color: var(--text-dark);
     font-family: 'Cairo', sans-serif;
+  }
+
+  .newsletter-form input::placeholder {
+    color: var(--text-muted);
   }
 
   .newsletter-form input:focus {
@@ -235,8 +228,8 @@ const today = new Date();
 
   .newsletter-form button {
     border: none;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    color: var(--button-text-color);
+    background: linear-gradient(90deg, #B8860B, #DAA520);
+    color: #fff;
     padding: 0 1.5rem;
     font-size: 1rem;
     font-weight: 700;
@@ -262,18 +255,21 @@ const today = new Date();
   
   .footer-bottom p {
     margin: 0;
-    color: var(--text-color);
+    color: var(--text-dark);
+    opacity: 0.8;
     font-size: 0.9rem;
     flex-grow: 1;
     text-align: center;
   }
 
   .company-name-gradient {
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
   }
 
   .social-links {
@@ -284,7 +280,7 @@ const today = new Date();
   }
 
   .social-links a {
-    color: var(--accent);
+    color: #B8860B; /* Gold color for social icons */
     transition: color 0.3s ease, transform 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -293,19 +289,20 @@ const today = new Date();
   }
 
   .social-links a:hover {
-    color: var(--secondary);
+    color: #DAA520;
     transform: translateY(-2px);
   }
 
   .social-links .social-name {
     font-size: 0.75rem;
-    color: var(--text-color);
+    color: var(--text-dark);
+    opacity: 0.7;
     margin-bottom: 0.3rem;
     transition: color 0.3s ease;
   }
   
   .social-links a:hover .social-name {
-      color: var(--secondary);
+      color: var(--primary);
   }
 
   .social-links svg {
