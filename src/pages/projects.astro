@@ -8,7 +8,7 @@ import { projects } from '../data/projects.js';
   <div class="projects-page">
     <div class="page-header">
       <div class="container">
-        <h1 class="page-title">مشاريعنا العقارية</h1>
+        <h1 class="page-title company-name-gradient">مشاريعنا العقارية</h1>
         <p class="page-subtitle">
           استكشف مشاريعنا المتميزة، من الوحدات التي تم تسليمها إلى المشاريع الواعدة قيد الإنشاء.
         </p>
@@ -19,7 +19,7 @@ import { projects } from '../data/projects.js';
       <!-- Delivered Projects Section -->
       <section id="delivered" class="projects-section delivered-section">
         <div class="container">
-          <h2 class="section-title">مشاريع تم تسليمها</h2>
+          <h2 class="section-title company-name-gradient">مشاريع تم تسليمها</h2>
           <div class="projects-grid">
             {projects.delivered.map(project => (
               <ProjectCard project={{...project, status: 'delivered'}} />
@@ -31,7 +31,7 @@ import { projects } from '../data/projects.js';
       <!-- Under Construction Projects Section -->
       <section id="under-construction" class="projects-section under-construction-section">
         <div class="container">
-          <h2 class="section-title">مشاريع تحت الإنشاء</h2>
+          <h2 class="section-title company-name-gradient">مشاريع تحت الإنشاء</h2>
           <div class="projects-grid">
             {projects.underConstruction.map(project => (
               <ProjectCard project={{...project, status: 'under-construction'}} />
@@ -44,6 +44,25 @@ import { projects } from '../data/projects.js';
 </Layout>
 
 <style>
+   @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
+  .company-name-gradient {
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
   .projects-page {
     padding-bottom: 4rem;
   }
@@ -58,10 +77,6 @@ import { projects } from '../data/projects.js';
     font-size: 3.5rem;
     margin-bottom: 1rem;
     display: inline-block;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
     font-weight: 700;
   }
 
@@ -69,7 +84,7 @@ import { projects } from '../data/projects.js';
     font-size: 1.2rem;
     max-width: 800px;
     margin: 0;
-    color: var(--text-dark);
+    color: var(--secondary);
     opacity: 0.95;
   }
 
@@ -93,10 +108,6 @@ import { projects } from '../data/projects.js';
     font-size: 2.8rem;
     margin-bottom: 3rem;
     display: inline-block;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
     font-weight: 700;
   }
   

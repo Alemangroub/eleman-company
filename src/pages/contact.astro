@@ -9,7 +9,7 @@ const { contact } = pageContent;
   <div class="contact-page">
     <div class="page-header">
       <div class="container">
-        <h1 class="page-title">{contact.title}</h1>
+        <h1 class="page-title company-name-gradient">{contact.title}</h1>
         <p class="page-subtitle">{contact.subtitle}</p>
       </div>
     </div>
@@ -18,28 +18,28 @@ const { contact } = pageContent;
       <div class="container">
         <div class="content-wrapper">
           <div class="contact-info">
-            <h2 class="section-title">{contact.info.title}</h2>
+            <h2 class="section-title company-name-gradient">{contact.info.title}</h2>
             <p>{contact.info.description}</p>
             <ul>
-              <li><strong><i class="icon">📍</i> العنوان:</strong> <a href={contact.info.addressLink} target="_blank">{contact.info.address}</a></li>
-              <li><strong><i class="icon">📧</i> البريد الإلكتروني:</strong> <a href={`mailto:${contact.info.email}`}>{contact.info.email}</a></li>
-              <li><strong><i class="icon">📞</i> الهاتف:</strong> <a href={`tel:${contact.info.phone}`}>{contact.info.phone}</a></li>
+              <li><strong><i class="icon company-name-gradient">📍</i> العنوان:</strong> <a href={contact.info.addressLink} target="_blank">{contact.info.address}</a></li>
+              <li><strong><i class="icon company-name-gradient">📧</i> البريد الإلكتروني:</strong> <a href={`mailto:${contact.info.email}`}>{contact.info.email}</a></li>
+              <li><strong><i class="icon company-name-gradient">📞</i> الهاتف:</strong> <a href={`tel:${contact.info.phone}`}>{contact.info.phone}</a></li>
             </ul>
           </div>
 
           <div class="contact-form">
-            <h2 class="section-title">{contact.form.title}</h2>
+            <h2 class="section-title company-name-gradient">{contact.form.title}</h2>
             <form>
               <div class="form-group">
-                <label for="name">الاسم</label>
+                <label for="name" class="company-name-gradient">الاسم</label>
                 <input type="text" id="name" placeholder="اسمك الكامل" required>
               </div>
               <div class="form-group">
-                <label for="email">البريد الإلكتروني</label>
+                <label for="email" class="company-name-gradient">البريد الإلكتروني</label>
                 <input type="email" id="email" placeholder="بريدك الإلكتروني" required>
               </div>
               <div class="form-group">
-                <label for="message">رسالتك</label>
+                <label for="message" class="company-name-gradient">رسالتك</label>
                 <textarea id="message" rows="6" placeholder="كيف يمكننا مساعدتك؟" required></textarea>
               </div>
               <button type="submit" class="submit-btn">إرسال الرسالة</button>
@@ -52,6 +52,25 @@ const { contact } = pageContent;
 </Layout>
 
 <style>
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
+  .company-name-gradient {
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
   .contact-page {
     background-color: var(--background);
     padding-bottom: 4rem;
@@ -67,17 +86,13 @@ const { contact } = pageContent;
     font-size: 3.5rem;
     margin-bottom: 1rem;
     display: inline-block;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
     font-weight: 700;
   }
 
   .page-subtitle {
     font-size: 1.2rem;
     max-width: 800px;
-    color: var(--text-dark);
+    color: var(--secondary);
     opacity: 0.95;
   }
 
@@ -99,17 +114,13 @@ const { contact } = pageContent;
     font-size: 2.2rem;
     margin-bottom: 1.5rem;
     display: inline-block;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
     font-weight: 700;
   }
 
   .contact-info p {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: var(--text-muted);
+    color: var(--secondary);
     margin-bottom: 2rem;
   }
 
@@ -121,7 +132,7 @@ const { contact } = pageContent;
   .contact-info li {
     font-size: 1.1rem;
     margin-bottom: 1rem;
-    color: var(--text-dark);
+    color: var(--secondary);
     display: flex;
     align-items: center;
   }
@@ -130,10 +141,6 @@ const { contact } = pageContent;
     margin-left: 10px; 
     font-style: normal;
     display: inline-block;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
 
   .contact-info a {
@@ -154,10 +161,6 @@ const { contact } = pageContent;
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--accent), var(--secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
     display: inline-block;
   }
 
@@ -165,7 +168,7 @@ const { contact } = pageContent;
   .form-group textarea {
     width: 100%;
     padding: 0.8rem 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--accent);
     border-radius: 8px;
     font-size: 1rem;
     font-family: 'Cairo', sans-serif;
@@ -186,7 +189,7 @@ const { contact } = pageContent;
 
   .submit-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 0 15px 0 var(--accent);
   }
 
   @media (max-width: 992px) {
