@@ -21,38 +21,21 @@ This document outlines the successful redesign of the corporate website, transit
 ### Component-Specific Changes
 
 - **Header & Sidebar:** 
-    - The main header is fixed with a solid white background and a subtle shadow.
+    - **Logo Animation:** Implemented a multi-layered animation on the company logo for a sophisticated and lively effect:
+        1.  **Dual "Shine" Effect:** Two alternating beams of light pass over the logo from opposite directions, giving it a dynamic, premium metallic glint. This uses the `::before` and `::after` pseudo-elements with staggered CSS animations.
+        2.  **"Breathing" Effect:** The logo itself slowly fades in and out (from 40% to 100% opacity), creating a calm, "breathing" rhythm. This is achieved with a separate `slow-fade` animation on the `img` element.
+        *This was all made possible by first replacing the original `.jpg` logo with a transparent `.png` version.*
+    - The header's behavior has been simplified to scroll naturally with the page content.
     - Main navigation links are styled in `--logo-gold`, turning to `--logo-blue` on hover or when active.
-    - The mobile sidebar background is now a semi-transparent light gray.
-    - Links within the mobile sidebar are a solid golden color (`--logo-gold`).
-    - The close button (X) for the sidebar is now dark blue (`--logo-blue`).
-    - Icons (WhatsApp, Search) in the sidebar are styled in gold (`--logo-gold`).
 
-- **Footer:** 
-    - The footer has been restyled with a light gray background (`#f0f4f8`).
-    - All text and link elements within the footer now use a consistent golden color scheme (`#B8860B`, `#DAA520`).
-    - Descriptive text and the newsletter signup now feature the animated, shiny metallic gold gradient.
-
-- **Welcome/Hero Section:**
-    - **Main Title:** Features a prominent, animated, shiny metallic gold gradient.
-    - **Subtitle & CTA Button:** Text and buttons now feature golden gradients and shadow effects.
-
-- **Projects Sections:**
-    - **Section Titles & Links:** All titles and links now use the animated or solid gold theme.
-
-- **Project Cards:**
-    - **Text, Borders & Effects:** All text, borders, and hover effects have been updated to use the golden theme, including titles, descriptions, status badges, and buttons.
-
-- **Project Detail Pages:**
-    - All text elements including descriptions, features, and area info have been updated to the consistent golden color scheme.
-
-- **Contact Form:** The contact form has been updated to use the new color scheme for input fields, labels, and the submit button.
+- **Footer, Welcome Section, Projects, etc.:** 
+    - All other components have been consistently styled with the golden theme, including text, links, buttons, and backgrounds, creating a unified and premium look and feel across the entire website.
 
 ### Page-Specific Changes
 
-- **All Pages:** All pages now consistently use the new theming system, ensuring a unified look and feel across the entire website.
+- **All Pages:** All pages now consistently use the new theming system.
 
 ## Current Plan
 
-- **Action:** Updated the mobile sidebar menu to have a light gray background.
-- **Next Step:** Commit changes to the version control system.
+- **Action:** Added a final layer of animation to the logo: a slow "breathing" effect where the logo gently fades in and out. This complements the existing dual shine effect, adding more life and sophistication.
+- **Next Step:** Commit all changes to the version control system.
