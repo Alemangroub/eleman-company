@@ -24,7 +24,9 @@ This document outlines the successful redesign of the corporate website, transit
 
 ### Component-Specific Changes
 
-- **Header:** The header is now fixed with a solid background, using the `--secondary` color. This improves readability and navigation as the user scrolls.
+- **Header:**
+    - The header is now fixed with a solid background, using the `--secondary` color. This improves readability and navigation as the user scrolls.
+    - The SVG logo in the header has been replaced with the new company image logo (`unnamed (1).jpg`).
 - **Footer:** The footer has been redesigned with a light theme, using the `--secondary` color for the background and `--primary` for text.
 - **Buttons & Interactive Elements:** Buttons and interactive elements now use the `--accent` and `--accent-dark` colors for hover effects and calls-to-action, providing clear visual feedback to the user.
 - **Welcome/Hero Section:** The default Astro welcome component has been replaced with a custom hero section featuring a professional real estate background image and a prominent call-to-action button.
@@ -37,7 +39,5 @@ This document outlines the successful redesign of the corporate website, transit
 
 ## Current Plan
 
-The redesign and theming implementation are now complete. The next steps are to commit these changes to the version control system and deploy the updated website.
-
-- **Commit:** All updated files will be committed with a descriptive message outlining the redesign and theming implementation.
-- **Deploy:** The new version will be deployed to the live server.
+- **Action:** The company logo in the header has been updated.
+- **Next Step:** Review the application to ensure the new logo is displayed correctly.
