@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="لوحة التحكم">
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">لوحة التحكم</h1>
+    <p class="mb-8">أهلاً بك في لوحة تحكم موقع شركة الإيمان.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">إدارة المشاريع</h2>
+        <p>من هنا يمكنك إضافة، تعديل، أو حذف المشاريع المعروضة على الموقع.</p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">إدارة الصفحات</h2>
+        <p>تعديل محتوى الصفحات الرئيسية مثل "عن الشركة" و "تواصل معنا".</p>
+      </div>
+    </div>
+  </main>
+</Layout>
