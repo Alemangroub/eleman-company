@@ -1,0 +1,339 @@
+---
+const today = new Date();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Quick Links Card -->
+      <div class="footer-card">
+        <h3 class="footer-title">روابط سريعة</h3>
+        <ul class="footer-links">
+          <li><a href="/">الرئيسية</a></li>
+          <li><a href="/about">عن الشركة</a></li>
+          <li><a href="/projects">مشاريعنا</a></li>
+          <li><a href="/contact">تواصل معنا</a></li>
+          <li><a href="#">سياسة الخصوصية</a></li>
+          <li><a href="#">الشروط والأحكام</a></li>
+        </ul>
+      </div>
+
+      <!-- About Card -->
+      <div class="footer-card">
+        <h3 class="footer-title">بنيان يرسخ الثقة</h3>
+        <p class="company-name-gradient">نصنع معالم الغد، ونصمم مشاريع عقارية استثنائية تلهم الحياة وتصنع الفرص.</p>
+      </div>
+
+      <!-- Contact Us Card -->
+      <div class="footer-card">
+        <h3 class="footer-title">تواصل معنا</h3>
+        <ul class="contact-list">
+            <li>
+                <a href="https://maps.app.goo.gl/HWD49tghryp1uequ9" target="_blank">
+                    <span class="icon location"></span>
+                    <span>مصر، سوهاج، طما، اعلي بنك القاهره</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://wa.me/201002672901" target="_blank">
+                    <span class="icon whatsapp"></span>
+                    <span>واتساب</span>
+                </a>
+            </li>
+            <li>
+                <a href="mailto:info@al-iman.dev">
+                    <span class="icon email"></span>
+                    <span>info@al-iman.dev</span>
+                </a>
+            </li>
+        </ul>
+      </div>
+
+      <!-- Newsletter Card -->
+      <div class="footer-card">
+        <h3 class="footer-title">اشترك في نشرتنا الإخبارية</h3>
+        <p class="company-name-gradient">كن على اطلاع دائم بآخر مشاريعنا وعروضنا الحصرية.</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="أدخل بريدك الإلكتروني" />
+          <button type="submit">اشترك</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {today.getFullYear()} <span class="company-name-gradient">شركة الايمان للتطوير العقاري</span>. جميع الحقوق محفوظة.</p>
+      <div class="social-links">
+        <a href="https://wa.me/201002672901" target="_blank" aria-label="واتساب">
+          <span class="social-name">واتساب</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 .4c48.8 0 94.3 19.4 128.8 53.9 34.5 34.5 53.9 80 53.9 128.8 0 99.4-81.3 180.6-180.6 180.6-31.5 0-61.7-8.2-87.8-23.4l-6.2-3.7-65.4 17.2 17.6-63.4-4.1-6.5c-16.2-25.8-24.9-56-24.9-87.8.1-99.3 81.3-180.5 180.6-180.5zM223.9 138.9c-49.3 0-89.4 40.1-89.4 89.4s40.1 89.4 89.4 89.4 89.4-40.1 89.4-89.4-40.1-89.4-89.4-89.4zm0 148.8c-32.8 0-59.4-26.6-59.4-59.4s26.6-59.4 59.4-59.4 59.4 26.6 59.4 59.4-26.6 59.4-59.4-59.4zm-132.8-89.4c0-32.8 11.2-63.4 31.5-87.8l-32.1-10.1c-22.8 28.5-36.2 63.8-36.2 101.4 0 79.5 64.6 144.1 144.1 144.1 37.6 0 72.8-14.4 99.1-39.1l10.1-10.1c-24.3-20.3-54.9-31.5-87.8-31.5-49.3.1-89.4-39.9-89.4-89.3z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/elemancompan" target="_blank" aria-label="فيسبوك">
+          <span class="social-name">فيسبوك</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@elemangroup.1" target="_blank" aria-label="يوتيوب">
+          <span class="social-name">يوتيوب</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M549.65 124.12c-6.28-23.65-24.78-42.17-48.28-48.6C458.78 64 288 64 288 64S117.22 64 74.63 75.52c-23.5 6.43-42 24.95-48.28 48.6-11.41 42.87-11.41 132.32-11.41 132.32s0 89.45 11.41 132.32c6.28 23.65 24.78 42.17 48.28 48.6C117.22 448 288 448 288 448s170.78 0 213.37-11.52c23.5-6.43 42-24.95 48.28-48.6 11.41-42.87 11.41-132.32 11.41-132.32s0-89.45-11.41-132.32zM235.46 352V160l144.96 96-144.96 96z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
+  .site-footer {
+    background-color: var(--background);
+    padding: 5rem 0 2rem 0;
+    text-align: right;
+    color: var(--text-dark);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    align-items: stretch;
+  }
+
+  .footer-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #B8860B;
+  }
+
+  .footer-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+    font-weight: 700;
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
+  .footer-title::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -10px;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #B8860B, #EACD65);
+  }
+
+  .footer-card p:not(.company-name-gradient) {
+    color: var(--text-dark);
+    opacity: 0.8;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    columns: 2;
+    gap: 10px;
+    flex-grow: 1;
+  }
+
+  .footer-links li a {
+    color: #B8860B; /* Gold color for links */
+    text-decoration: none;
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+    display: inline-block;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .footer-links li a:hover {
+    color: #DAA520;
+    transform: translateX(-5px);
+  }
+
+  .contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-list li {
+    font-size: 1rem;
+  }
+
+  .contact-list a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #B8860B; /* Gold color for contact links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 700;
+  }
+
+  .contact-list a:hover {
+    color: #DAA520;
+  }
+
+  .contact-list .icon {
+    display: none; /* Hiding old icons for a cleaner look */
+  }
+
+  .newsletter-form {
+    display: flex;
+    margin-top: auto;
+    border-radius: 50px;
+    overflow: hidden;
+    border: 1px solid #B8860B;
+  }
+
+  .newsletter-form input {
+    flex-grow: 1;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+    background-color: transparent;
+    color: var(--text-dark);
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .newsletter-form input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .newsletter-form input:focus {
+    outline: none;
+  }
+
+  .newsletter-form button {
+    border: none;
+    background: linear-gradient(90deg, #B8860B, #DAA520);
+    color: #fff;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .newsletter-form button:hover {
+    opacity: 0.85;
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .footer-bottom p {
+    margin: 0;
+    color: #B8860B;
+    opacity: 1;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .company-name-gradient {
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  .social-links a {
+    color: #B8860B; /* Gold color for social icons */
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .social-links a:hover {
+    color: #DAA520;
+    transform: translateY(-2px);
+  }
+
+  .social-links .social-name {
+    font-size: 0.75rem;
+    color: #B8860B;
+    opacity: 1;
+    margin-bottom: 0.3rem;
+    transition: color 0.3s ease;
+  }
+  
+  .social-links a:hover .social-name {
+      color: var(--primary);
+  }
+
+  .social-links svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: currentColor;
+  }
+
+  @media (max-width: 768px) {
+    .footer-bottom {
+      flex-direction: column;
+      justify-content: center;
+    }
+    .footer-bottom p {
+      order: 2;
+    }
+    .social-links {
+      order: 1;
+      margin-bottom: 1rem;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .footer-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+  }
+
+  @media (max-width: 576px) {
+    .footer-links {
+      columns: 1;
+    }
+  }
+</style>

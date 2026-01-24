@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { projects } from '../data/projects.js';
+import { pageContent } from '../data/pages.js'; // Import the new centralized content
+import ProjectCard from '../components/ProjectCard.astro';
+
+// 1. Get projects
+const allProjects = [...projects.delivered, ...projects.underConstruction];
+
+// 2. Transform pageContent into a searchable array
+const siteContent = Object.values(pageContent).map(page => ({
+  type: 'page',
+  slug: page.slug,
+  name: page.name,
+  description: page.searchableDescription // Use the getter for searchable text
+}));
+
+// 3. Get search query from URL
+const query = Astro.url.searchParams.get('q')?.toLowerCase() || null;
+
+let filteredProjects = [];
+let filteredPages = [];
+
+// 4. Filter content if a query exists
+if (query) {
+  // Filter projects
+  filteredProjects = allProjects.filter(project =>
+    project.name.toLowerCase().includes(query) ||
+    project.description.toLowerCase().includes(query) ||
+    project.location.toLowerCase().includes(query)
+  );
+
+  // Filter pages
+  filteredPages = siteContent.filter(page =>
+    page.name.toLowerCase().includes(query) ||
+    (page.description && page.description.toLowerCase().includes(query))
+  );
+}
+
+const hasResults = filteredProjects.length > 0 || filteredPages.length > 0;
+---
+
+<Layout title={`نتائج البحث عن: ${query || ''}`}>
+  <div class="search-results-page">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title">نتائج البحث</h1>
+
+        {query ? (
+          <div>
+            <p class="search-query-display">
+              أنت تبحث عن: <strong>"{query}"</strong>
+            </p>
+          </div>
+        ) : (
+          <p class="no-query">
+            الرجاء إدخال كلمة للبحث عنها في الشريط العلوي.
+          </p>
+        )}
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="container">
+        {hasResults ? (
+          <div class="results-container">
+            <!-- Page Results -->
+            {filteredPages.length > 0 && (
+              <div class="results-section">
+                <h2 class="results-heading">صفحات</h2>
+                <div class="page-results-grid">
+                  {filteredPages.map(page => (
+                    <a href={page.slug} class="page-result-card">
+                      <h3>{page.name}</h3>
+                      <p>{page.description.substring(0, 120)}...</p>
+                      <span class="view-page-link">زيارة الصفحة &rarr;</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Project Results -->
+            {filteredProjects.length > 0 && (
+              <div class="results-section">
+                <h2 class="results-heading">مشاريع</h2>
+                <div class="projects-grid">
+                  {filteredProjects.map(project => (
+                    <div class="project-card-wrapper">
+                      <ProjectCard project={project} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          query && (
+            <p class="no-results">
+              عذرًا، لم يتم العثور على نتائج لبحثك. حاول استخدام كلمات أخرى.
+            </p>
+          )
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .search-results-page {
+    padding-bottom: 5rem;
+    background-color: var(--background);
+    min-height: 60vh;
+  }
+
+  .page-header {
+    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.8), rgba(var(--primary-rgb), 0.9));
+    color: var(--text-light);
+    text-align: right;
+    padding: 140px 0 60px 0;
+    margin-bottom: 3rem;
+  }
+
+  .page-title {
+    font-size: 3rem;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-query-display {
+    text-align: right;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .search-query-display strong {
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .no-query, .no-results {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    padding: 3rem 0;
+  }
+
+  .results-section {
+    margin-bottom: 4rem;
+  }
+
+  .results-heading {
+    font-size: 2.2rem;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
+  }
+
+  .page-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .page-result-card {
+    display: block;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+  }
+
+  .page-result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.1);
+  }
+
+  .page-result-card h3 {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .page-result-card p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  
+  .view-page-link {
+    font-weight: 700;
+    color: var(--accent);
+    transition: color 0.3s ease;
+  }
+  
+  .page-result-card:hover .view-page-link {
+    color: var(--primary);
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-title {
+        font-size: 2.5rem;
+    }
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+  }
+
+</style>

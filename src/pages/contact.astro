@@ -1,0 +1,211 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { pageContent } from '../data/pages.js';
+
+const { contact } = pageContent;
+---
+
+<Layout title={`اتصل بنا - ${contact.name}`}>
+  <div class="contact-page">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title company-name-gradient">{contact.title}</h1>
+        <p class="page-subtitle">{contact.subtitle}</p>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="container">
+        <div class="content-wrapper">
+          <div class="contact-info">
+            <h2 class="section-title company-name-gradient">{contact.info.title}</h2>
+            <p>{contact.info.description}</p>
+            <ul>
+              <li><strong><i class="icon company-name-gradient">📍</i> العنوان:</strong> <a href={contact.info.addressLink} target="_blank">{contact.info.address}</a></li>
+              <li><strong><i class="icon company-name-gradient">📧</i> البريد الإلكتروني:</strong> <a href={`mailto:${contact.info.email}`}>{contact.info.email}</a></li>
+              <li><strong><i class="icon company-name-gradient">📞</i> الهاتف:</strong> <a href={`tel:${contact.info.phone}`}>{contact.info.phone}</a></li>
+            </ul>
+          </div>
+
+          <div class="contact-form">
+            <h2 class="section-title company-name-gradient">{contact.form.title}</h2>
+            <form>
+              <div class="form-group">
+                <label for="name" class="company-name-gradient">الاسم</label>
+                <input type="text" id="name" placeholder="اسمك الكامل" required>
+              </div>
+              <div class="form-group">
+                <label for="email" class="company-name-gradient">البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="بريدك الإلكتروني" required>
+              </div>
+              <div class="form-group">
+                <label for="message" class="company-name-gradient">رسالتك</label>
+                <textarea id="message" rows="6" placeholder="كيف يمكننا مساعدتك؟" required></textarea>
+              </div>
+              <button type="submit" class="submit-btn">إرسال الرسالة</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
+  .company-name-gradient {
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
+  .contact-page {
+    background-color: var(--background);
+    padding-bottom: 4rem;
+  }
+
+  .page-header {
+    background-color: transparent;
+    text-align: right;
+    padding: 160px 0 80px 0;
+  }
+
+  .page-title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .page-subtitle {
+    font-size: 1.2rem;
+    max-width: 800px;
+    color: var(--secondary);
+    opacity: 0.95;
+  }
+
+  .page-content {
+    padding: 4rem 0;
+  }
+
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .contact-info p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--secondary);
+    margin-bottom: 2rem;
+  }
+
+  .contact-info ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .contact-info li {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+  }
+
+  .contact-info .icon {
+    margin-left: 10px; 
+    font-style: normal;
+    display: inline-block;
+  }
+
+  .contact-info a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .contact-info a:hover {
+    color: var(--primary);
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  .form-group input, 
+  .form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
+  }
+
+  .submit-btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px 0 var(--accent);
+  }
+
+  @media (max-width: 992px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 120px 0 60px 0;
+    }
+    .page-title {
+      font-size: 2.8rem;
+    }
+  }
+</style>

@@ -1,0 +1,187 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { pageContent } from '../data/pages.js';
+
+const { about } = pageContent;
+---
+
+<Layout title={`من نحن - ${about.name}`}>
+  <div class="about-page">
+    <div class="page-header">
+      <div class="container">
+        <h1 class="page-title company-name-gradient">{about.title}</h1>
+        <p class="page-subtitle">{about.subtitle}</p>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="container">
+        <div class="content-wrapper">
+            <div class="mission-vision-section">
+              <div class="content-block">
+                <h2 class="section-title company-name-gradient">{about.mission.title}</h2>
+                <p>{about.mission.text}</p>
+              </div>
+              <div class="content-block">
+                <h2 class="section-title company-name-gradient">{about.vision.title}</h2>
+                <p>{about.vision.text}</p>
+              </div>
+            </div>
+
+            <div class="values-section">
+                <h2 class="section-title company-name-gradient">{about.values.title}</h2>
+                <div class="values-grid">
+                  {about.values.list.map(value => (
+                    <div class="value-card">
+                      <div class="value-icon company-name-gradient">{value.icon}</div>
+                      <h3 class="company-name-gradient">{value.name}</h3>
+                      <p>{value.description}</p>
+                    </div>
+                  ))}
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  @keyframes shine {
+		0% {
+			background-position: -200% center;
+		}
+		100% {
+			background-position: 200% center;
+		}
+	}
+
+  .company-name-gradient {
+    background: linear-gradient(90deg, #B8860B, #EACD65, #B8860B);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+    background-size: 200% auto;
+	  animation: shine 5s linear infinite;
+  }
+
+  .about-page {
+    padding-bottom: 4rem; 
+    background-color: var(--background); /* Use the global background */
+  }
+
+  .page-header {
+    background-color: transparent; /* Removed blue gradient */
+    text-align: right;
+    padding: 160px 0 80px 0;
+  }
+
+  .page-title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .page-subtitle {
+    font-size: 1.2rem;
+    max-width: 800px;
+    color: var(--secondary);
+    opacity: 0.95;
+  }
+
+  .page-content {
+    padding: 4rem 0;
+  }
+
+  .content-wrapper {
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  
+  .mission-vision-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    font-weight: 700;
+  }
+
+  .content-block p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--secondary);
+  }
+
+  .values-section {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .value-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--accent);
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px 0 var(--accent);
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .value-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    font-weight: 700;
+  }
+  
+  .value-card p {
+      color: var(--secondary);
+  }
+
+  @media (max-width: 992px) {
+    .mission-vision-section {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    .content-wrapper {
+      padding: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 120px 0 60px 0;
+    }
+    .page-title {
+      font-size: 2.8rem;
+    }
+  }
+</style>

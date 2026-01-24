@@ -1,0 +1,268 @@
+---
+import NavLink from './NavLink.astro';
+import Search from './Search.astro';
+---
+<header id="main-header" class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <a href="/" class="logo-container" aria-label="Eleman Company Home">
+                <img src="/unnamed (1).png" alt="El Eman Company Logo" class="company-logo">
+            </a>
+            
+            <div class="nav-and-actions">
+                <nav class="main-nav">
+                    <NavLink href="/" text="الرئيسية" />
+                    <NavLink href="/about" text="من نحن" />
+                    <NavLink href="/projects" text="مشاريعنا" />
+                    <NavLink href="/contact" text="اتصل بنا" />
+                </nav>
+                <div class="header-actions">
+                    <Search />
+                    <a href="https://api.whatsapp.com/send/?phone=201002672901&text&type=phone_number&app_absent=0" class="whatsapp-icon" target="_blank" aria-label="تواصل معنا عبر واتساب">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </a>
+                </div>
+            </div>
+
+            <button class="hamburger-menu" aria-label="Toggle menu" aria-expanded="false">
+                <svg class="hamburger-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    </div>
+</header>
+
+<script>
+    const hamburger = document.querySelector('.hamburger-menu');
+    const navAndActions = document.querySelector('.nav-and-actions');
+    const header = document.getElementById('main-header');
+
+    hamburger.addEventListener('click', () => {
+        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
+        hamburger.setAttribute('aria-expanded', String(!isExpanded));
+        navAndActions.classList.toggle('is-active');
+        header.classList.toggle('is-active');
+        document.body.classList.toggle('no-scroll');
+    });
+</script>
+
+<style>
+   .site-header {
+        --logo-blue: #0b2d48;
+        --logo-gold: #b8860b;
+        background-color: #fff;
+        padding: 1rem 0;
+        z-index: 1000;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        width: 200px;
+        position: relative; /* Needed for pseudo-elements */
+        overflow: hidden;   /* Hides the shine effect outside the logo area */
+    }
+
+    .company-logo {
+        width: 100%;
+        height: auto;
+    }
+    
+    /* --- Dual Shine Animation for Logo --- */
+    .logo-container::before,
+    .logo-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: translateX(-150%) skewX(-20deg);
+    }
+
+    /* Shine from Left to Right */
+    .logo-container::after {
+        animation: logo-shine-ltr 6s ease-in-out infinite;
+        animation-delay: 1s;
+    }
+
+    /* Shine from Right to Left */
+    .logo-container::before {
+        animation: logo-shine-rtl 6s ease-in-out infinite;
+        animation-delay: 4s; /* Stagger the second shine */
+    }
+
+    .main-nav :global(a), .header-actions > *, .hamburger-menu {
+        opacity: 0;
+        animation: fadeInDown 0.5s forwards;
+    }
+
+    /* --- Keyframe Animations --- */
+
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes logo-shine-ltr {
+        0% { transform: translateX(-150%) skewX(-20deg); }
+        40% { transform: translateX(150%) skewX(-20deg); }
+        100% { transform: translateX(150%) skewX(-20deg); }
+    }
+    
+    @keyframes logo-shine-rtl {
+        0% { transform: translateX(150%) skewX(-20deg); }
+        40% { transform: translateX(-150%) skewX(-20deg); }
+        100% { transform: translateX(-150%) skewX(-20deg); }
+    }
+
+    .nav-and-actions {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .main-nav {
+        display: flex;
+        gap: 2.5rem;
+    }
+
+    .main-nav :global(a) {
+        font-weight: 700;
+        color: var(--logo-gold);
+        transition: color 0.3s ease;
+        padding-bottom: 5px;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .main-nav :global(a:hover) {
+        color: var(--logo-blue);
+    }
+
+    .main-nav :global(a.is-active) {
+        color: var(--logo-blue);
+    }
+
+    .main-nav :global(a.is-active::after) {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: var(--logo-blue);
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .whatsapp-icon svg, .header-actions :global(.search-button svg) {
+        stroke: var(--logo-gold);
+        transition: all 0.3s ease;
+    }
+
+    .whatsapp-icon:hover svg, .header-actions :global(.search-button:hover svg) {
+        stroke: var(--logo-blue);
+        transform: scale(1.15);
+    }
+    
+    .hamburger-menu {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1001;
+        color: var(--logo-gold);
+    }
+
+    .close-icon {
+        display: none;
+    }
+
+    .hamburger-menu[aria-expanded="true"] .hamburger-icon { display: none; }
+    .hamburger-menu[aria-expanded="true"] .close-icon { display: block; }
+    .hamburger-menu[aria-expanded="true"] { color: var(--logo-blue); }
+
+    @media (max-width: 1024px) {
+        .logo-container { width: 180px; }
+        .main-nav { gap: 1.5rem; }
+    }
+
+    @media (max-width: 768px) {
+        .header-content { justify-content: flex-end; }
+        .logo-container { position: absolute; left: 50%; transform: translateX(-50%); top: 15px; }
+        .hamburger-menu { display: block; }
+
+        .nav-and-actions {
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 25vh;
+            gap: 3rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(240, 240, 240, 0.98);
+            backdrop-filter: blur(10px);
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto;
+        }
+        
+        .nav-and-actions.is-active { display: flex; transform: translateX(0); }
+        .main-nav { flex-direction: column; gap: 2rem; text-align: center; }
+        .header-actions { flex-direction: column; gap: 2rem; }
+        
+        .nav-and-actions.is-active :global(a) {
+            font-size: 1.8rem;
+            color: var(--logo-gold);
+            transition: color 0.3s ease;
+        }
+
+        .nav-and-actions.is-active :global(a.is-active),
+        .nav-and-actions.is-active :global(a:hover) {
+            color: var(--logo-blue);
+        }
+        
+        .nav-and-actions.is-active .header-actions .whatsapp-icon svg,
+        .nav-and-actions.is-active :global(.search-button svg) {
+             stroke: var(--logo-gold); 
+             width: 32px; 
+             height: 32px; 
+        }
+
+        .nav-and-actions.is-active .header-actions .whatsapp-icon:hover svg,
+        .nav-and-actions.is-active :global(.search-button:hover svg) {
+            stroke: var(--logo-blue);
+        }
+
+        body.no-scroll { overflow: hidden; }
+    }
+</style>

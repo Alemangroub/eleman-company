@@ -1,0 +1,202 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { projects } from '../../data/projects.js';
+
+export async function getStaticPaths() {
+  const allProjects = [...projects.delivered, ...projects.underConstruction];
+  return allProjects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<Layout title={project.name}>
+  <article class="project-details-page">
+
+    <header class="project-hero">
+      <div class="hero-background-image">
+        <img src={project.image} alt={`صورة لمشروع ${project.name}`} />
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <h1 class="project-title">{project.name}</h1>
+        <p class="project-location">{project.location}</p>
+      </div>
+    </header>
+
+    <main class="project-main-content">
+      <div class="container">
+        <div class="content-wrapper">
+          
+          <div class="details-section">
+            <h2 class="section-heading">عن المشروع</h2>
+            <p class="project-description">{project.description}</p>
+          </div>
+
+          <div class="features-section">
+            <h2 class="section-heading">المميزات الرئيسية</h2>
+            <ul class="features-list">
+              {project.features.map(feature => (
+                <li class="feature-item">{feature}</li>
+              ))}
+            </ul>
+            <div class="area-info">
+                <h3 class="area-title">مساحة الوحدات</h3>
+                <p class="area-value">{project.area}</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+
+  </article>
+</Layout>
+
+<style>
+  .project-details-page {
+    color: var(--text-dark); /* Changed from #fff */
+  }
+
+  /* Hero Section */
+  .project-hero {
+    position: relative;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .hero-background-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(var(--primary-rgb), 0.7) 0%, transparent 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+  }
+
+  .project-title {
+    font-size: 4rem;
+    font-weight: 900;
+    color: #fff; /* Title on image can stay white */
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    margin: 0;
+  }
+
+  .project-location {
+    font-size: 1.5rem;
+    color: var(--accent); /* Changed from gold */
+    margin-top: 0.5rem;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.4);
+  }
+
+  /* Main Content */
+  .project-main-content {
+    padding: 4rem 0;
+    background-color: var(--background); /* Changed from #1a1a1a */
+  }
+  
+  .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+  }
+
+  .content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .content-wrapper {
+        grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  .section-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary); /* Changed from gold */
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(var(--primary-rgb), 0.2); /* Adjusted border */
+    display: inline-block;
+  }
+
+  .project-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--secondary); /* Changed from #ccc */
+  }
+
+  .features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+  }
+
+  .feature-item {
+    background-color: #fff; /* Changed background */
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border-left: 4px solid var(--accent); /* Changed border color */
+    transition: background-color 0.3s;
+    color: var(--secondary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .feature-item:hover {
+    background-color: #f9f9f9;
+  }
+
+  .area-info {
+      background-color: rgba(var(--primary-rgb), 0.08);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+  }
+
+  .area-title {
+      font-size: 1.2rem;
+      color: var(--primary); /* Changed color */
+      margin: 0 0 0.5rem 0;
+  }
+
+  .area-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--secondary); /* Changed color */
+      margin: 0;
+  }
+
+</style>

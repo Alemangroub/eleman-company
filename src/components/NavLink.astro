@@ -1,0 +1,72 @@
+---
+const { href, text } = Astro.props;
+const currentPath = Astro.url.pathname;
+// Handles root path and other paths, ignoring trailing slashes if any
+const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+<a href={href} class:list={["nav-link", { active: isActive }]} aria-current={isActive ? "page" : false}>
+  {text}
+</a>
+
+<style>
+  .nav-link {
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: black; /* Default color for desktop */
+    text-decoration: none;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+    display: inline-block; /* Ensures proper layout */
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    transition: width 0.3s;
+  }
+
+  .nav-link:not(.active):hover::after {
+      width: 100%;
+  }
+
+  /* Style for active link on desktop */
+  .nav-link.active {
+    color: rgb(var(--accent)); 
+  }
+  
+  @media (max-width: 768px) {
+    /* Reset desktop-specific styles for mobile nav */
+    .nav-link {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: rgb(var(--text-light));
+        padding: 0.5rem 2rem;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        width: auto; /* Ensure it doesn't take full width unless specified by parent */
+    }
+
+    .nav-link::after {
+        display: none; /* Hide underline on mobile */
+    }
+
+    .nav-link:hover {
+        background-color: rgba(var(--accent-rgb), 0.8);
+        color: rgb(var(--primary));
+    }
+
+    /* Consistent styling for active link in mobile nav */
+    .nav-link.active {
+      background-color: rgba(var(--accent-rgb), 0.2);
+      color: rgb(var(--accent));
+    }
+  }
+</style>
