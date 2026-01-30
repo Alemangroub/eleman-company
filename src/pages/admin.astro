@@ -2,21 +2,144 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="لوحة التحكم">
-  <main class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-4">لوحة التحكم</h1>
-    <p class="mb-8">أهلاً بك في لوحة تحكم موقع شركة الإيمان.</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">إدارة المشاريع</h2>
-        <p>من هنا يمكنك إضافة، تعديل، أو حذف المشاريع المعروضة على الموقع.</p>
-      </div>
-
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">إدارة الصفحات</h2>
-        <p>تعديل محتوى الصفحات الرئيسية مثل "عن الشركة" و "تواصل معنا".</p>
-      </div>
+<Layout title="Admin Login - El Eman" showNavigation={false}>
+  <main class="main-background" dir="rtl">
+    <div class="login-container">
+        <div class="login-glass">
+            <h1 class="text-4xl font-bold mb-6 text-white text-center">تسجيل دخول المدير العام</h1>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username" class="sr-only">اسم المستخدم</label>
+                    <input type="text" id="username" name="username" placeholder="اسم المستخدم" required>
+                </div>
+                <div class="input-group">
+                    <label for="password" class="sr-only">كلمة المرور</label>
+                    <input type="password" id="password" name="password" placeholder="كلمة المرور" required>
+                </div>
+                <p id="error-message" class="error-message"></p>
+                <button type="submit" class="login-button">تسجيل الدخول</button>
+            </form>
+        </div>
     </div>
   </main>
 </Layout>
+
+<script>
+    const form = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+
+    // Redirect if already logged in
+    if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
+        window.location.href = '/admin/dashboard';
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = form.username.value;
+        const password = form.password.value;
+
+        if (username === 'admin' && password === 'password') {
+            sessionStorage.setItem('isAdminLoggedIn', 'true');
+            window.location.href = '/admin/dashboard';
+        } else {
+            errorMessage.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة.';
+            errorMessage.style.display = 'block';
+        }
+    });
+</script>
+
+<style>
+    .main-background {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f4f8;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
+            radial-gradient(circle at top left, #0b2d48, transparent 60%),
+            radial-gradient(circle at bottom right, #b8860b, transparent 50%);
+        background-blend-mode: screen, normal, normal;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .main-background::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%239C92AC" fill-opacity="0.06"><path d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/></g></g></svg>');
+        z-index: 0;
+    }
+
+    .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 450px;
+        padding: 2rem;
+    }
+
+    .login-glass {
+        background: rgba(11, 45, 72, 0.85);
+        -webkit-backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+    
+    .input-group {
+        margin-bottom: 1.5rem;
+    }
+
+    #username, #password {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    #username::placeholder, #password::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    #username:focus, #password:focus {
+        outline: none;
+        border-color: rgba(184, 134, 11, 0.8);
+        box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.3);
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 10px;
+        border: none;
+        background-color: var(--accent);
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .login-button:hover {
+        background-color: #DAA520;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
+    }
+
+    .error-message {
+        color: #e74c3c;
+        text-align: center;
+        margin-bottom: 1rem;
+        display: none; /* Hidden by default */
+        font-size: 0.9rem;
+    }
+</style>

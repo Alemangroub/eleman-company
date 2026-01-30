@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="لوحة التحكم - المدير العام" showNavigation={false}>
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <header class="dashboard-header">
+                <h1>لوحة تحكم المدير العام</h1>
+                <p>مرحباً بك، استعرض وأدِر الأقسام المختلفة من هنا.</p>
+            </header>
+
+            <section class="dashboard-actions">
+                <a href="/admin/installments" class="action-card">
+                    <div class="card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M12 16H8"/></svg>
+                    </div>
+                    <h2>إدارة الأقساط</h2>
+                    <p>عرض وتحديث وإضافة أقساط العملاء.</p>
+                </a>
+
+                <a href="/" class="logout-button">
+                    تسجيل الخروج
+                </a>
+            </section>
+        </div>
+    </main>
+</Layout>
+
+<script is:inline>
+    // Simple client-side auth check
+    if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
+        window.location.href = '/admin';
+    }
+
+    const logoutButton = document.querySelector('.logout-button');
+    logoutButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem('isAdminLoggedIn');
+        window.location.href = '/admin';
+    });
+</script>
+
+<style>
+    .dashboard-main {
+        min-height: 100vh;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .dashboard-container {
+        width: 100%;
+        max-width: 900px;
+        text-align: center;
+    }
+
+    .dashboard-header {
+        margin-bottom: 3rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-dark);
+    }
+
+    .dashboard-header p {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+    }
+
+    .dashboard-actions {
+        display: grid;
+        gap: 2rem;
+        justify-items: center;
+    }
+
+    .action-card {
+        background: rgba(10, 10, 10, 0.75);
+        -webkit-backdrop-filter: blur(15px);
+        backdrop-filter: blur(15px);
+        border-radius: 15px;
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 400px;
+        text-decoration: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-icon {
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+
+    .action-card h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+        color: white;
+    }
+
+    .action-card p {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .logout-button {
+        margin-top: 2rem;
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        background-color: #e53e3e;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .logout-button:hover {
+        background-color: #c53030;
+    }
+</style>

@@ -1,1 +1,49 @@
-@import "tailwindcss";
+
+:root {
+    --accent: #B8860B; /* Dark Goldenrod */
+    --accent-rgb: 184, 134, 11;
+    --accent-light: #fafad2; /* Light Goldenrod Yellow */
+    --primary: #B8860B; /* Dark Goldenrod */
+    --primary-rgb: 184, 134, 11;
+    --secondary: #DAA520; /* Goldenrod */
+    --background: #f0f4f8; /* Light Grayish Blue */
+    --text-dark: #2d3748; /* Dark Slate Gray */
+    --text-light: #f7fafc; /* Alice Blue */
+    --text-muted: #718096; /* Slate Gray */
+}
+
+html {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--background);
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 1 auto;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--primary);
+}
+
+.container {
+    width: 90%;
+    max-width: 1300px;
+    margin: 0 auto;
+}

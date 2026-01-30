@@ -1,0 +1,336 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+---
+
+<Layout title="قائمة الأقساط - المدير العام" showNavigation={false} loadGlobalCss={false}>
+    <!-- Confirmation Modal -->
+    <div id="delete-confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">تأكيد الحذف</h3>
+            <p class="modal-text">هل أنت متأكد أنك تريد حذف هذا السجل؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+            <div class="modal-actions">
+                <button id="confirm-delete-btn" class="modal-btn confirm-btn">نعم، حذف</button>
+                <button id="cancel-delete-btn" class="modal-btn cancel-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="installments-main">
+        <div class="installments-container">
+            <header class="installments-header">
+                <div class="header-title">
+                    <h1>الأقساط الحالية</h1>
+                    <a href="/admin/installments" class="back-link">&larr; العودة</a>
+                </div>
+            </header>
+
+            <div class="installments-content">
+                <div class="accordion-list" id="installments-accordion-body">
+                    <!-- Accordion items will be dynamically inserted here -->
+                </div>
+                <div id="no-data-message" class="no-data-message">
+                    <p>لا توجد سجلات أقساط لعرضها حاليًا. ابدأ بإضافة قسط جديد.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</Layout>
+
+<script is:inline>
+    if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
+        window.location.href = '/admin';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const accordionBody = document.getElementById('installments-accordion-body');
+        const noDataMessage = document.getElementById('no-data-message');
+        const modal = document.getElementById('delete-confirm-modal');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        let allInstallments = [];
+        let recordIdToDelete = null;
+
+        function getOverallStatus(installments) {
+            if (!installments || installments.length === 0) return { text: 'لم تبدأ', className: 'status-pending' };
+            const pendingCount = installments.filter(inst => inst.status === 'pending').length;
+            if (pendingCount === 0) return { text: 'مكتمل', className: 'status-paid' };
+            if (pendingCount < installments.length) return { text: 'جاري الدفع', className: 'status-partial' };
+            return { text: 'لم تبدأ', className: 'status-pending' };
+        }
+
+        function showModal(id) {
+            recordIdToDelete = id;
+            modal.classList.add('visible');
+        }
+
+        function hideModal() {
+            recordIdToDelete = null;
+            modal.classList.remove('visible');
+        }
+
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (recordIdToDelete === null) return;
+
+            const itemToDelete = accordionBody.querySelector(`.accordion-item[data-id="${recordIdToDelete}"]`);
+
+            allInstallments = allInstallments.filter(record => record.id !== recordIdToDelete);
+            localStorage.setItem('installmentsData', JSON.stringify(allInstallments));
+            
+            hideModal();
+
+            if (itemToDelete) {
+                itemToDelete.classList.add('removing');
+                itemToDelete.addEventListener('transitionend', () => {
+                    itemToDelete.remove();
+                    if (allInstallments.length === 0) {
+                        renderAccordion([]);
+                    }
+                }, { once: true });
+            } else {
+                 if (allInstallments.length === 0) {
+                    renderAccordion([]);
+                }
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
+        function attachActionListeners() {
+            accordionBody.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    const idToDelete = parseInt(this.dataset.id, 10);
+                    showModal(idToDelete);
+                }
+            });
+
+            accordionBody.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.stopPropagation();
+                    const idToEdit = this.dataset.id;
+                    window.location.href = `/admin/installments/edit?id=${idToEdit}`;
+                }
+            });
+        }
+
+        function renderAccordion(data) {
+            accordionBody.innerHTML = '';
+            if (!data || data.length === 0) {
+                noDataMessage.style.display = 'block';
+                accordionBody.style.display = 'none';
+                return;
+            }
+            noDataMessage.style.display = 'none';
+            accordionBody.style.display = 'block';
+
+            data.forEach(record => {
+                // Defensive coding: Check if core properties exist before using them
+                const customerName = record.customerName || 'بيانات غير متوفرة';
+                const customerPhone = record.customerPhone || '-';
+                const totalAmount = record.totalAmount || 0;
+                const type = record.type || 'غير محدد';
+                const location = record.location || 'غير محدد';
+                const notes = record.notes || '';
+                const installments = record.installments || [];
+
+                const status = getOverallStatus(installments);
+                const remainingInstallments = installments.filter(inst => inst.status === 'pending').length;
+                const totalInstallments = installments.length;
+
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'accordion-item';
+                accordionItem.dataset.id = record.id;
+
+                let installmentsHtml = '';
+                if (installments.length > 0) {
+                    installments.forEach((inst, index) => {
+                        const instStatus = inst.status === 'paid' ? { text: 'مدفوع', className: 'status-paid' } : { text: 'مستحق', className: 'status-pending' };
+                        installmentsHtml += `
+                            <div class="inst-row">
+                                <span>القسط ${index + 1}</span>
+                                <span>${parseFloat(inst.amount || 0).toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</span>
+                                <span>${inst.dueDate || '-'}</span>
+                                <span><span class="status-badge ${instStatus.className}">${instStatus.text}</span></span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    installmentsHtml = '<div class="no-installments-info">لا توجد أقساط مجدولة لهذا العميل.</div>';
+                }
+
+                accordionItem.innerHTML = `
+                    <button class="accordion-trigger">
+                        <div class="trigger-left">
+                            <span class="customer-name">${customerName}</span>
+                            <span class="customer-phone">${customerPhone}</span>
+                        </div>
+                        <div class="trigger-right">
+                            <span class="status-badge ${status.className}">${status.text}</span>
+                            <span class="trigger-icon"></span>
+                        </div>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="content-inner">
+                            <div class="details-container">
+                                <div class="detail-item"><strong>النوع:</strong><span>${type}</span></div>
+                                <div class="detail-item"><strong>الموقع:</strong><span>${location}</span></div>
+                                <div class="detail-item"><strong>المبلغ الإجمالي:</strong><span>${parseFloat(totalAmount).toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</span></div>
+                                <div class="detail-item"><strong>الأقساط المتبقية:</strong><span>${remainingInstallments} / ${totalInstallments}</span></div>
+                            </div>
+                            ${notes ? `<div class="notes-section"><h4>ملاحظات</h4><p>${notes}</p></div>` : ''}
+                            <div class="installments-section">
+                                <h4>جدول الأقساط</h4>
+                                <div class="inst-header">
+                                    <span>الدفعة</span><span>المبلغ</span><span>تاريخ الاستحقاق</span><span>الحالة</span>
+                                </div>
+                                <div class="inst-body">${installmentsHtml}</div>
+                            </div>
+                            <div class="actions">
+                                <button class="action-btn edit-btn" data-id="${record.id}" title="تعديل"><i class="fas fa-edit"></i> تعديل</button>
+                                <button class="action-btn delete-btn" data-id="${record.id}" title="حذف"><i class="fas fa-trash-alt"></i> حذف</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                accordionBody.appendChild(accordionItem);
+            });
+            attachActionListeners();
+        }
+        
+        accordionBody.addEventListener('click', function(event) {
+            const trigger = event.target.closest('.accordion-trigger');
+            if (trigger) {
+                const currentItem = trigger.parentElement;
+                const content = trigger.nextElementSibling;
+                const isOpening = !currentItem.classList.contains('active');
+
+                this.querySelectorAll('.accordion-item.active').forEach(item => {
+                    if (item !== currentItem) {
+                        item.classList.remove('active');
+                        item.querySelector('.accordion-content').style.maxHeight = null;
+                    }
+                });
+
+                if (isOpening) {
+                    currentItem.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                } else {
+                    currentItem.classList.remove('active');
+                    content.style.maxHeight = null;
+                }
+            }
+        });
+
+        function loadData() {
+            try {
+                const rawData = localStorage.getItem('installmentsData');
+                const data = rawData ? JSON.parse(rawData) : [];
+                allInstallments = Array.isArray(data) ? data.sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
+                renderAccordion(allInstallments);
+            } catch (error) {
+                console.error('CRITICAL ERROR loading data. The data might be corrupted.', error);
+                allInstallments = [];
+                renderAccordion(allInstallments); 
+            }
+        }
+
+        loadData();
+    });
+</script>
+
+<style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+:root {
+    --page-bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --primary-accent: #6d28d9;
+    --secondary-accent: #0891b2;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --status-paid-bg: #dcfce7; 
+    --status-paid-text: #166534;
+    --status-pending-bg: #fee2e2;
+    --status-pending-text: #991b1b;
+    --status-partial-bg: #ffedd5;
+    --status-partial-text: #9a3412;
+    --danger-bg: #fee2e2;
+    --danger-text: #b91c1c;
+    --danger-hover-bg: #fecaca;
+}
+
+.installments-main { min-height: 100vh; background-color: var(--page-bg); display: flex; justify-content: center; align-items: flex-start; padding: 3rem 2rem; font-family: 'Cairo', sans-serif; direction: rtl; }
+.installments-container { width: 100%; max-width: 800px; }
+
+.installments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.header-title h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0; }
+.back-link { color: var(--primary-accent); text-decoration: none; font-weight: 600; font-size: 1rem; }
+
+.installments-content { background-color: transparent; border-radius: 16px; margin-top: 1.5rem; }
+
+.accordion-list { display: flex; flex-direction: column; gap: 1rem; }
+.accordion-item { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.4s ease; }
+.accordion-item.removing { opacity: 0; transform: scale(0.95); margin-top: -80px; padding-top: 0; padding-bottom: 0; z-index: -1; }
+.accordion-item.active { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+
+.accordion-trigger { background: transparent; border: none; width: 100%; text-align: right; padding: 1.25rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.trigger-left { display: flex; flex-direction: column; align-items: flex-start; }
+.customer-name { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+.customer-phone { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.1rem; }
+.trigger-right { display: flex; align-items: center; gap: 1rem; }
+.trigger-icon { width: 1.25rem; height: 1.25rem; transition: transform 0.3s ease; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='3' stroke='%239ca3af'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3e%3c/svg%3e"); background-size: contain; background-repeat: no-repeat; background-position: center; }
+.accordion-item.active .trigger-icon { transform: rotate(-180deg); }
+
+.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; background-color: #f9fafb; }
+.content-inner { padding: 0.5rem 1.5rem 1.5rem; border-top: 1px solid var(--border-color); }
+
+.details-container { display: flex; flex-wrap: wrap; gap: 1rem 2rem; padding: 1.5rem 0; }
+.detail-item { display: flex; flex-direction: column; flex: 1 1 180px; }
+.detail-item strong { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
+.detail-item span { color: var(--text-primary); font-weight: 600; font-size: 1rem; }
+
+.status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; font-size: 0.8rem; }
+.status-paid { background-color: var(--status-paid-bg); color: var(--status-paid-text); }
+.status-pending { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
+.status-partial { background-color: var(--status-partial-bg); color: var(--status-partial-text); }
+
+h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 1rem 0; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); }
+
+.notes-section p { font-size: 0.95rem; color: #374151; line-height: 1.6; background: #f0f2f5; padding: 0.75rem 1rem; border-radius: 8px; }
+
+.inst-header, .inst-row { display: grid; grid-template-columns: 1fr 1.5fr 1.5fr 1fr; gap: 1rem; padding: 0.75rem; text-align: right; }
+.inst-header { font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; }
+.inst-body { border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); }
+.inst-row { border-bottom: 1px solid var(--border-color); }
+.inst-row:last-child { border-bottom: none; }
+.no-installments-info { padding: 2rem; text-align: center; color: var(--text-secondary); }
+
+.actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; justify-content: flex-end; }
+.action-btn { font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 0.5rem; }
+.edit-btn { background-color: var(--status-partial-bg); color: var(--status-partial-text); }
+.edit-btn:hover { background-color: #fed7aa; }
+.delete-btn { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
+.delete-btn:hover { background-color: #fecaca; }
+
+.no-data-message { padding: 4rem 2rem; text-align: center; color: var(--text-secondary); font-size: 1.1rem; display: none; }
+
+/* Modal Styles */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.modal-overlay.visible { opacity: 1; visibility: visible; }
+.modal-content { background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease; }
+.modal-overlay.visible .modal-content { transform: scale(1); }
+.modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; }
+.modal-text { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+.modal-actions { display: flex; justify-content: center; gap: 1rem; }
+.modal-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
+.confirm-btn { background-color: var(--danger-bg); color: var(--danger-text); }
+.confirm-btn:hover { background-color: var(--danger-hover-bg); }
+.cancel-btn { background-color: var(--border-color); color: var(--text-primary); }
+.cancel-btn:hover { background-color: #d1d5db; }
+</style>

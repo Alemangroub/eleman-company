@@ -1,41 +1,32 @@
-
-# Blueprint: Website Redesign & Theming
+# Blueprint: Installment Management System
 
 ## Overview
 
-This document outlines the successful redesign of the corporate website, transitioning from a dark, image-heavy theme to a clean, minimalist, and professional design. It also details the implementation of a CSS variable-based theming system for easy customization of the site's color palette and a comprehensive "Golden Theme" application.
+This project is a web-based installment management system for an administrator. It provides a secure login, a central dashboard, and functionalities to manage customer installments. The system is built using Astro.js, focusing on a clean, modern, and responsive user interface.
 
-## Implemented Styles, Designs, and Features
+## Implemented Features & Styles
 
-### Theming System
+*   **Authentication & Core Pages:** Secure login, dashboard, and basic installment management pages are in place.
+*   **Premium Form UI (`/admin/installments/new`):**
+    *   **Layout:** A sophisticated, single-column layout on a floating card with a textured, premium background.
+    *   **Dynamic "Other" Field:** A "Type" dropdown that dynamically shows a text input when "Other" is selected.
+    *   Fields for customer details and total amount.
 
-- **CSS Variables:** A robust theming system has been established using CSS variables defined in the `src/layouts/Layout.astro` file.
-- **Golden Theme:** A luxurious golden theme has been consistently applied across the website for a unified and premium user experience.
+## Current Plan: Professional Installment Schedule UI
 
-### General
+**Goal:** Elevate the dynamically generated installment schedule to a highly professional and organized UI, improving clarity and usability.
 
-- **Color Palette:** The entire site now uses a consistent color scheme based on the new CSS variables.
-- **Typography:** The existing "Cairo" and "Orbitron" fonts have been maintained for their modern and readable quality, with a clear typographic hierarchy for headings and paragraphs.
-- **Layout:** Global layout styles have been updated to ensure a clean and consistent presentation across all pages.
+**Strategy:**
 
-### Component-Specific Changes
+1.  **"Card-in-Card" Design:** Each generated installment will be presented in its own distinct, styled "card". This visually separates each installment group.
 
-- **Header & Sidebar:** 
-    - **Logo Animation:** Implemented a multi-layered animation on the company logo for a sophisticated and lively effect:
-        1.  **Dual "Shine" Effect:** Two alternating beams of light pass over the logo from opposite directions, giving it a dynamic, premium metallic glint. This uses the `::before` and `::after` pseudo-elements with staggered CSS animations.
-        2.  **"Breathing" Effect:** The logo itself slowly fades in and out (from 40% to 100% opacity), creating a calm, "breathing" rhythm. This is achieved with a separate `slow-fade` animation on the `img` element.
-        *This was all made possible by first replacing the original `.jpg` logo with a transparent `.png` version.*
-    - The header's behavior has been simplified to scroll naturally with the page content.
-    - Main navigation links are styled in `--logo-gold`, turning to `--logo-blue` on hover or when active.
+2.  **Intra-Card Grid Layout:** Within each installment card, the input fields (Amount, Due Date, Status) will be arranged horizontally using a responsive CSS grid. This creates a compact, modern, and easy-to-scan layout.
 
-- **Footer, Welcome Section, Projects, etc.:** 
-    - All other components have been consistently styled with the golden theme, including text, links, buttons, and backgrounds, creating a unified and premium look and feel across the entire website.
+3.  **Refined Styling & Hierarchy:**
+    *   Each installment card will have a clear, prominent header (e.g., "القسط 1").
+    *   The card will have a subtle background, rounded corners, and padding to distinguish it from the main form background.
+    *   The layout will be fully responsive, stacking the grid items vertically on smaller screens for optimal mobile viewing.
 
-### Page-Specific Changes
+4.  **Flawless Floating Labels:** Ensure the floating label behavior is perfectly implemented for all fields within the new grid layout, maintaining a consistent user experience.
 
-- **All Pages:** All pages now consistently use the new theming system.
-
-## Current Plan
-
-- **Action:** Added a final layer of animation to the logo: a slow "breathing" effect where the logo gently fades in and out. This complements the existing dual shine effect, adding more life and sophistication.
-- **Next Step:** Commit all changes to the version control system.
+5.  **Update `new.astro`:** Apply all the above CSS and JS changes to `src/pages/admin/installments/new.astro` to bring this professional design to life.

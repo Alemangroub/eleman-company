@@ -1,7 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ProjectsSection from '../components/ProjectsSection.astro';
-import { projects } from '../data/projects.js';
 ---
 
 <Layout title="شركة الايمان للتطوير العقاري">
@@ -9,23 +7,8 @@ import { projects } from '../data/projects.js';
 		<div class="hero-content">
 			<h1 class="main-title">الجودة تلتقي بالابتكار في قلب صعيد مصر</h1>
 			<p class="subtitle">نحن لا نبني العقارات فقط، بل نبني ثقة تدوم</p>
-			<a href="/projects" class="cta-button">اكتشف مشاريعنا</a>
 		</div>
 	</div>
-
-	<!-- Use the flexible ProjectsSection for Delivered Projects -->
-	<ProjectsSection 
-		title="مشاريع تم تسليمها"
-		projects={projects.delivered}
-		background="var(--background)"
-	/>
-
-	<!-- Use the flexible ProjectsSection for Under Construction Projects -->
-	<ProjectsSection 
-		title="مشاريع تحت الإنشاء"
-		projects={projects.underConstruction}
-		background="var(--background)"
-	/>
 
 </Layout>
 
@@ -72,26 +55,6 @@ import { projects } from '../data/projects.js';
 		font-size: 1.5rem;
 		color: var(--secondary);
 		margin-bottom: 2rem;
-	}
-
-	.cta-button {
-		display: inline-block;
-		padding: 0.8rem 2rem;
-		font-size: 1.2rem;
-		font-weight: 700;
-		font-family: 'Orbitron', sans-serif;
-		color: #fff;
-		background: linear-gradient(90deg, #B8860B, #DAA520);
-		border: none;
-		border-radius: 8px;
-		text-decoration: none;
-		transition: transform 0.3s, box-shadow 0.3s;
-		box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
-	}
-
-	.cta-button:hover {
-		transform: translateY(-3px);
-		box-shadow: 0 7px 25px rgba(218, 165, 32, 0.5);
 	}
 
 	@media (max-width: 992px) {
