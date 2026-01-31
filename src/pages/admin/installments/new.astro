@@ -1,13 +1,13 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
----
+--- 
 
-<Layout title="إضافة قسط جديد - المدير العام" showNavigation={false}>
+<Layout title="إضافة عقد جديد - المدير العام" showNavigation={false}>
     <main class="new-installment-main">
         <div class="form-card">
             <header class="form-header">
-                <h1>إضافة قسط جديد</h1>
-                <p>املأ البيانات لإنشاء سجل قسط جديد.</p>
+                <h1>إضافة عقد جديد</h1>
+                <p>املأ البيانات لإنشاء سجل عقد وأقساطه.</p>
             </header>
 
             <form id="new-installment-form" class="new-installment-form">
@@ -63,21 +63,25 @@ import Layout from '../../../layouts/Layout.astro';
 
                 <!-- ACTIONS -->
                 <div class="form-actions">
-                    <button type="submit" class="submit-button">حفظ السجل</button>
-                    <a href="/admin/installments" class="cancel-link">إلغاء</a>
+                    <button type="submit" id="submit-button" class="submit-button">حفظ السجل</button>
+                    <a href="/admin/installments/list" class="cancel-link">إلغاء</a>
                 </div>
             </form>
         </div>
     </main>
 </Layout>
 
-<script is:inline>
+<script>
+    import { db } from '../../../lib/firebase';
+    import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
         window.location.href = '/admin';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const form = document.getElementById('new-installment-form');
+        const submitButton = document.getElementById('submit-button');
         const typeSelect = document.getElementById('type');
         const otherTypeWrapper = document.getElementById('other-type-wrapper');
         const otherTextInput = document.getElementById('otherTypeText');
@@ -86,18 +90,8 @@ import Layout from '../../../layouts/Layout.astro';
         const totalAmountInput = document.getElementById('totalAmount');
 
         const toggleOtherField = () => {
-            if (typeSelect.value === 'أخرى') {
-                otherTypeWrapper.style.maxHeight = otherTypeWrapper.scrollHeight + 'px';
-                otherTypeWrapper.style.opacity = '1';
-                otherTypeWrapper.style.marginBottom = '1.75rem';
-                otherTextInput.required = true;
-            } else {
-                otherTypeWrapper.style.maxHeight = '0';
-                otherTypeWrapper.style.opacity = '0';
-                otherTypeWrapper.style.marginBottom = '0';
-                otherTextInput.required = false;
-                otherTextInput.value = '';
-            }
+            otherTypeWrapper.style.display = typeSelect.value === 'أخرى' ? 'block' : 'none';
+            otherTextInput.required = typeSelect.value === 'أخرى';
         };
         typeSelect.addEventListener('change', toggleOtherField);
         toggleOtherField();
@@ -110,8 +104,12 @@ import Layout from '../../../layouts/Layout.astro';
             scheduleContainer.innerHTML = '';
             if (count === 0) return;
 
+            let lastDueDate = new Date();
+            lastDueDate.setDate(lastDueDate.getDate() + 1); // Start from tomorrow
+
             let scheduleHTML = '';
             for (let i = 1; i <= count; i++) {
+                const dueDateString = lastDueDate.toISOString().split('T')[0];
                 scheduleHTML += `
                     <div class="installment-card">
                         <h3 class="installment-card-header">القسط ${i}</h3>
@@ -121,28 +119,45 @@ import Layout from '../../../layouts/Layout.astro';
                                 <label for="inst-amount-${i}">قيمة القسط</label>
                             </div>
                             <div class="form-group compact">
-                                <input type="date" id="inst-due-date-${i}" name="inst-due-date-${i}" class="has-value-when-filled" required />
+                                <input type="date" id="inst-due-date-${i}" name="inst-due-date-${i}" class="due-date-input" value="${dueDateString}" required data-index="${i}" />
                                 <label for="inst-due-date-${i}">تاريخ الاستحقاق</label>
-                            </div>
-                            <div class="form-group compact">
-                                <select id="inst-status-${i}" name="inst-status-${i}" required>
-                                    <option value="pending" selected>مستحق</option>
-                                    <option value="paid">مدفوع</option>
-                                </select>
-                                <label for="inst-status-${i}">الحالة</label>
                             </div>
                         </div>
                     </div>
                 `;
+                lastDueDate.setMonth(lastDueDate.getMonth() + 1);
             }
             scheduleContainer.innerHTML = scheduleHTML;
         };
 
+        const updateFollowingDates = (startIndex, newStartDateStr) => {
+            let lastDueDate = new Date(newStartDateStr);
+            const count = parseInt(countSelect.value) || 0;
+
+            for (let i = startIndex + 1; i <= count; i++) {
+                lastDueDate.setMonth(lastDueDate.getMonth() + 1);
+                const nextDueDateInput = document.getElementById(`inst-due-date-${i}`);
+                if (nextDueDateInput) {
+                    nextDueDateInput.value = lastDueDate.toISOString().split('T')[0];
+                }
+            }
+        };
+
+        scheduleContainer.addEventListener('change', (e) => {
+            if (e.target && e.target.classList.contains('due-date-input')) {
+                const index = parseInt(e.target.dataset.index, 10);
+                const newDate = e.target.value;
+                updateFollowingDates(index, newDate);
+            }
+        });
+
         countSelect.addEventListener('change', generateSchedule);
         totalAmountInput.addEventListener('input', generateSchedule);
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            submitButton.disabled = true;
+            submitButton.textContent = 'جاري الحفظ...';
             
             const formData = new FormData(form);
             const count = parseInt(formData.get('installmentsCount')) || 0;
@@ -150,9 +165,9 @@ import Layout from '../../../layouts/Layout.astro';
 
             for (let i = 1; i <= count; i++) {
                 installments.push({
-                    amount: formData.get(`inst-amount-${i}`),
+                    amount: parseFloat(formData.get(`inst-amount-${i}`)),
                     dueDate: formData.get(`inst-due-date-${i}`),
-                    status: formData.get(`inst-status-${i}`),
+                    status: 'pending', // Default status
                 });
             }
 
@@ -160,25 +175,25 @@ import Layout from '../../../layouts/Layout.astro';
             const finalType = typeValue === 'أخرى' ? formData.get('otherTypeText') : typeValue;
 
             const newRecord = {
-                id: Date.now(), // Use timestamp as a number for easier sorting
+                createdAt: serverTimestamp(),
                 type: finalType,
                 location: formData.get('location'),
                 customerName: formData.get('customerName'),
                 customerPhone: formData.get('customerPhone'),
-                totalAmount: formData.get('totalAmount'),
+                totalAmount: parseFloat(formData.get('totalAmount')),
                 notes: formData.get('notes'),
                 installmentsCount: count,
                 installments: installments,
             };
 
             try {
-                const existingData = JSON.parse(localStorage.getItem('installmentsData')) || [];
-                existingData.push(newRecord);
-                localStorage.setItem('installmentsData', JSON.stringify(existingData));
+                await addDoc(collection(db, "installments"), newRecord);
                 window.location.href = '/admin/installments/list';
             } catch (error) {
-                console.error('Could not save data to localStorage', error);
-                alert('حدث خطأ أثناء حفظ البيانات. الرجاء المحاولة مرة أخرى.');
+                 console.error('Error adding document: ', error);
+                 alert('حدث خطأ أثناء حفظ البيانات.');
+                 submitButton.disabled = false;
+                 submitButton.textContent = 'حفظ السجل';
             }
         });
     });
@@ -204,7 +219,6 @@ import Layout from '../../../layouts/Layout.astro';
     justify-content: center; 
     align-items: flex-start; 
     padding: 3rem 2rem; 
-    font-family: 'Cairo', sans-serif; 
     direction: rtl; 
 }
 
@@ -219,161 +233,72 @@ import Layout from '../../../layouts/Layout.astro';
     margin-bottom: 3rem; 
 }
 
-.form-header h1 { 
-    font-size: 2rem; 
-    font-weight: 800; 
-    color: var(--text-primary); 
-    margin: 0; 
-    text-align: center; 
-}
-.form-header p { 
-    color: var(--text-secondary); 
-    margin: 0.5rem 0 2.5rem; 
-    text-align: center; 
-}
+.form-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-primary); margin: 0; text-align: center; }
+.form-header p { color: var(--text-secondary); margin: 0.5rem 0 2.5rem; text-align: center; }
 
-.form-group { 
-    position: relative; 
-    margin-bottom: 1.75rem; 
-    width: 100%; 
-}
-#other-type-wrapper { 
-    max-height: 0; 
-    opacity: 0; 
-    overflow: hidden; 
-    margin-bottom: 0; 
-    padding: 0; 
-    transition: max-height 0.5s ease-out, opacity 0.4s ease-out, margin-bottom 0.5s ease-out; 
-}
+.form-group { position: relative; margin-bottom: 1.75rem; width: 100%; }
+#other-type-wrapper { display: none; }
 
 .form-group input, .form-group select, .form-group textarea { 
-    width: 100%; 
-    padding: 1rem 0.8rem 0.8rem; 
-    background-color: var(--input-bg); 
-    border: 1px solid var(--input-border); 
-    border-radius: 8px; 
-    font-size: 1rem; 
-    font-family: 'Cairo', sans-serif; 
-    color: var(--text-primary); 
-    transition: border-color 0.3s, box-shadow 0.3s; 
+    width: 100%; padding: 1rem 0.8rem 0.8rem; background-color: var(--input-bg); 
+    border: 1px solid var(--input-border); border-radius: 8px; font-size: 1rem; 
+    color: var(--text-primary); transition: border-color 0.3s, box-shadow 0.3s; 
 }
-.form-group select { 
-    padding: 0.9rem 0.8rem; 
-    appearance: none; 
+.form-group select { padding: 0.9rem 0.8rem; appearance: none; 
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
-    background-position: left 0.5rem center; 
-    background-repeat: no-repeat; 
-    background-size: 1.5em 1.5em; 
+    background-position: left 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; 
 }
-select:invalid, select option[value=""] { 
-    color: var(--text-secondary) !important; 
-}
-select option { 
-    color: var(--text-primary); 
-}
+select:invalid, select option[value=""] { color: var(--text-secondary) !important; }
+select option { color: var(--text-primary); }
 
 .form-group label { 
-    position: absolute; 
-    top: 0.9rem; 
-    right: 0.8rem; 
-    color: var(--text-secondary); 
-    pointer-events: none; 
-    transition: all 0.3s ease; 
-    background-color: var(--input-bg); 
-    padding: 0 0.3rem; 
-    font-size: 1rem; 
+    position: absolute; top: 0.9rem; right: 0.8rem; color: var(--text-secondary); 
+    pointer-events: none; transition: all 0.3s ease; background-color: var(--input-bg); 
+    padding: 0 0.3rem; font-size: 1rem; 
 }
-.form-group.compact label { 
-    background-color: var(--card-bg);
+.form-group.compact label { background-color: var(--card-bg); }
+
+input:not(:placeholder-shown) + label, input:focus + label, textarea:not(:placeholder-shown) + label, 
+tearea:focus + label, select:focus + label, select:valid + label, input.due-date-input + label {
+    top: -0.8rem; right: 0.8rem; font-size: 0.8rem;
+    color: var(--primary-accent); font-weight: 600;
 }
 
-.form-group input:not(:placeholder-shown) + label, 
-.form-group input:focus + label, 
-.form-group textarea:not(:placeholder-shown) + label, 
-.form-group textarea:focus + label, 
-.form-group select:focus + label, 
-.form-group select:valid + label, 
-.form-group input.has-value-when-filled + label {
-    top: -0.8rem;
-    right: 0.8rem;
-    font-size: 0.8rem;
-    color: var(--primary-accent);
-    font-weight: 600;
-}
-
-.form-group input:focus, 
-.form-group select:focus, 
-.form-group textarea:focus { 
-    outline: none; 
-    border-color: var(--input-border-focus); 
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+    outline: none; border-color: var(--input-border-focus); 
     box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.2);
 }
 
-#installments-schedule-container { 
-    margin-top: 2rem; 
-}
+#installments-schedule-container { margin-top: 2rem; }
 .installment-card { 
-    background-color: #f9fafb; 
-    border: 1px solid #e5e7eb; 
-    border-radius: 12px; 
-    margin-bottom: 1.5rem; 
-    overflow: hidden; 
+    background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; 
+    margin-bottom: 1.5rem; overflow: hidden; 
 }
 .installment-card-header { 
-    font-size: 1.1rem; 
-    font-weight: 700; 
-    color: var(--secondary-accent); 
-    padding: 0.75rem 1.25rem; 
-    background-color: rgba(0,0,0,0.03); 
-    border-bottom: 1px solid #e5e7eb; 
-    margin: 0; 
+    font-size: 1.1rem; font-weight: 700; color: var(--secondary-accent); 
+    padding: 0.75rem 1.25rem; background-color: rgba(0,0,0,0.03); 
+    border-bottom: 1px solid #e5e7eb; margin: 0; 
 }
 .installment-card-body { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
-    gap: 1rem; 
-    padding: 1.5rem 1.25rem; 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 1rem; padding: 1.5rem 1.25rem; 
 }
-.form-group.compact { 
-    margin-bottom: 0; 
-}
-.form-group.compact input, 
-.form-group.compact select { 
-    background-color: var(--card-bg); 
-}
+.form-group.compact { margin-bottom: 0; }
+.form-group.compact input, .form-group.compact select { background-color: var(--card-bg); }
 
-.form-actions { 
-    margin-top: 2rem; 
-    text-align: center; 
-}
+.form-actions { margin-top: 2rem; text-align: center; }
 .submit-button { 
-    width: 100%; 
-    padding: 0.9rem; 
-    font-size: 1.1rem; 
-    font-weight: bold; 
-    color: white; 
+    width: 100%; padding: 0.9rem; font-size: 1.1rem; font-weight: bold; color: white; 
     background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent)); 
-    border: none; 
-    border-radius: 8px; 
-    cursor: pointer; 
-    position: relative; 
-    overflow: hidden; 
+    border: none; border-radius: 8px; cursor: pointer; 
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
-.submit-button:hover { 
+.submit-button:disabled { opacity: 0.7; cursor: not-allowed; }
+.submit-button:hover:not(:disabled) { 
     transform: translateY(-2px); 
-    box-shadow: 0 10px 15px -3px rgba(109, 40, 217, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(109, 40, 217, 0.3);
 }
-.cancel-link { 
-    display: block; 
-    margin-top: 1rem; 
-    color: var(--text-secondary); 
-    text-decoration: none; 
-    transition: color 0.3s; 
-}
-.cancel-link:hover { 
-    color: var(--secondary-accent); 
-}
-
+.cancel-link { display: block; margin-top: 1rem; color: var(--text-secondary); text-decoration: none; transition: color 0.3s; }
+.cancel-link:hover { color: var(--secondary-accent); }
 </style>

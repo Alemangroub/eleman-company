@@ -1,336 +1,418 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
----
+--- 
 
-<Layout title="قائمة الأقساط - المدير العام" showNavigation={false} loadGlobalCss={false}>
-    <!-- Confirmation Modal -->
-    <div id="delete-confirm-modal" class="modal-overlay">
+<Layout title="إدارة الأقساط - المدير العام" showNavigation={false}>
+    <!-- Installment Delete Modal -->
+    <div id="delete-installment-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 class="modal-title">تأكيد الحذف</h3>
-            <p class="modal-text">هل أنت متأكد أنك تريد حذف هذا السجل؟ هذا الإجراء لا يمكن التراجع عنه.</p>
+            <h3 class="modal-title">تأكيد حذف القسط</h3>
+            <p class="modal-text">هل أنت متأكد أنك تريد حذف هذا القسط؟ لا يمكن التراجع عن هذا الإجراء.</p>
             <div class="modal-actions">
-                <button id="confirm-delete-btn" class="modal-btn confirm-btn">نعم، حذف</button>
-                <button id="cancel-delete-btn" class="modal-btn cancel-btn">إلغاء</button>
+                <button id="confirm-inst-delete-btn" class="modal-btn confirm-btn">نعم، حذف</button>
+                <button id="cancel-inst-delete-btn" class="modal-btn cancel-btn">إلغاء</button>
             </div>
         </div>
     </div>
 
-    <main class="installments-main">
-        <div class="installments-container">
-            <header class="installments-header">
+    <!-- Contract Delete Modal -->
+    <div id="delete-contract-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">تأكيد حذف العقد</h3>
+            <p class="modal-text-danger"><b>تحذير:</b> أنت على وشك حذف العقد بالكامل، بما في ذلك جميع الأقساط المسجلة تحته. هل أنت متأكد؟</p>
+            <div class="modal-actions">
+                <button id="confirm-contract-delete-btn" class="modal-btn confirm-btn">نعم، حذف العقد</button>
+                <button id="cancel-contract-delete-btn" class="modal-btn cancel-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <header class="dashboard-header">
                 <div class="header-title">
-                    <h1>الأقساط الحالية</h1>
-                    <a href="/admin/installments" class="back-link">&larr; العودة</a>
+                    <h1>سجلات الأقساط</h1>
+                    <p>اضغط على العميل لعرض وتعديل أقساطه.</p>
                 </div>
+                <a href="/admin/installments/new" class="new-contract-btn">+ إضافة عقد جديد</a>
             </header>
 
-            <div class="installments-content">
-                <div class="accordion-list" id="installments-accordion-body">
-                    <!-- Accordion items will be dynamically inserted here -->
+            <div class="table-container">
+                <div id="loading-indicator" class="loading-indicator">
+                    <div class="spinner"></div>
+                    <p>جاري تحميل العقود...</p>
                 </div>
-                <div id="no-data-message" class="no-data-message">
-                    <p>لا توجد سجلات أقساط لعرضها حاليًا. ابدأ بإضافة قسط جديد.</p>
+                <table id="contracts-table" class="contracts-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>العميل</th>
+                            <th>الوحدة</th>
+                            <th>الأقساط</th>
+                            <th>إجراءات العقد</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Rows will be injected by script -->
+                    </tbody>
+                </table>
+                <div id="no-data-message" class="no-data-message" style="display: none;">
+                    <p>لا توجد عقود لعرضها.</p>
                 </div>
             </div>
         </div>
     </main>
 </Layout>
 
-<script is:inline>
+<script>
+    import { db } from '../../../lib/firebase';
+    import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
+
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
         window.location.href = '/admin';
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const accordionBody = document.getElementById('installments-accordion-body');
+        const tableBody = document.getElementById('table-body');
+        const table = document.getElementById('contracts-table');
+        const loadingIndicator = document.getElementById('loading-indicator');
         const noDataMessage = document.getElementById('no-data-message');
-        const modal = document.getElementById('delete-confirm-modal');
-        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        let allInstallments = [];
-        let recordIdToDelete = null;
+        
+        const instModal = document.getElementById('delete-installment-modal');
+        const confirmInstDeleteBtn = document.getElementById('confirm-inst-delete-btn');
+        const cancelInstDeleteBtn = document.getElementById('cancel-inst-delete-btn');
+        let installmentToDelete = null;
 
-        function getOverallStatus(installments) {
-            if (!installments || installments.length === 0) return { text: 'لم تبدأ', className: 'status-pending' };
-            const pendingCount = installments.filter(inst => inst.status === 'pending').length;
-            if (pendingCount === 0) return { text: 'مكتمل', className: 'status-paid' };
-            if (pendingCount < installments.length) return { text: 'جاري الدفع', className: 'status-partial' };
-            return { text: 'لم تبدأ', className: 'status-pending' };
-        }
+        const contractModal = document.getElementById('delete-contract-modal');
+        const confirmContractDeleteBtn = document.getElementById('confirm-contract-delete-btn');
+        const cancelContractDeleteBtn = document.getElementById('cancel-contract-delete-btn');
+        let contractIdToDelete = null;
 
-        function showModal(id) {
-            recordIdToDelete = id;
-            modal.classList.add('visible');
-        }
+        const formatCurrency = (num) => (num || 0).toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' });
+        const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        function hideModal() {
-            recordIdToDelete = null;
-            modal.classList.remove('visible');
-        }
+        async function loadContracts() {
+            loadingIndicator.style.display = 'flex';
+            table.style.display = 'none';
+            noDataMessage.style.display = 'none';
+            tableBody.innerHTML = '';
 
-        confirmDeleteBtn.addEventListener('click', () => {
-            if (recordIdToDelete === null) return;
+            try {
+                const q = query(collection(db, "installments"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                const contracts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-            const itemToDelete = accordionBody.querySelector(`.accordion-item[data-id="${recordIdToDelete}"]`);
-
-            allInstallments = allInstallments.filter(record => record.id !== recordIdToDelete);
-            localStorage.setItem('installmentsData', JSON.stringify(allInstallments));
-            
-            hideModal();
-
-            if (itemToDelete) {
-                itemToDelete.classList.add('removing');
-                itemToDelete.addEventListener('transitionend', () => {
-                    itemToDelete.remove();
-                    if (allInstallments.length === 0) {
-                        renderAccordion([]);
-                    }
-                }, { once: true });
-            } else {
-                 if (allInstallments.length === 0) {
-                    renderAccordion([]);
+                if (contracts.length === 0) {
+                    noDataMessage.style.display = 'flex';
+                    return;
                 }
+
+                renderContracts(contracts);
+                table.style.display = 'table';
+
+            } catch (error) {
+                console.error("Error loading contracts: ", error);
+                noDataMessage.querySelector('p').textContent = 'حدث خطأ أثناء تحميل البيانات.';
+                noDataMessage.style.display = 'flex';
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        function renderContracts(contracts) {
+            tableBody.innerHTML = '';
+            contracts.forEach(contract => {
+                const mainRow = document.createElement('tr');
+                mainRow.className = 'contract-row';
+                mainRow.dataset.contractId = contract.id;
+                mainRow.innerHTML = `
+                    <td class="expand-cell">
+                        <div class="customer-name">${contract.customerName}</div>
+                        <div class="customer-phone">${contract.customerPhone}</div>
+                    </td>
+                    <td class="expand-cell">${contract.type} - ${contract.location}</td>
+                    <td class="expand-cell">${(contract.installments || []).length}</td>
+                    <td class="contract-actions">
+                        <button class="expand-btn" title="عرض/إخفاء الأقساط">عرض &darr;</button>
+                        <button class="action-btn delete-contract-btn" title="حذف العقد بالكامل" data-contract-id="${contract.id}"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>
+                    </td>
+                `;
+                tableBody.appendChild(mainRow);
+
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'details-container-row';
+                detailsRow.dataset.detailsFor = contract.id;
+                detailsRow.style.display = 'none';
+                
+                let installmentsHTML = '<p>لا توجد أقساط مسجلة لهذا العقد.</p>';
+                if (contract.installments && contract.installments.length > 0) {
+                     installmentsHTML = `
+                        <table class="nested-table">
+                            <thead><tr><th>المبلغ</th><th>الاستحقاق</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+                            <tbody>
+                                ${contract.installments.map((inst, index) => `
+                                    <tr>
+                                        <td>${formatCurrency(inst.amount)}</td>
+                                        <td>${formatDate(inst.dueDate)}</td>
+                                        <td>
+                                            <select class="status-select" data-contract-id="${contract.id}" data-inst-index="${index}">
+                                                <option value="pending" ${inst.status === 'pending' ? 'selected' : ''}>مستحق</option>
+                                                <option value="paid" ${inst.status === 'paid' ? 'selected' : ''}>تم الدفع</option>
+                                            </select>
+                                        </td>
+                                        <td class="actions-cell">
+                                            <button class="save-btn" style="display: none;">حفظ</button>
+                                            <button class="action-btn edit-btn" title="تعديل القسط" data-contract-id="${contract.id}" data-inst-index="${index}"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                                            <button class="action-btn delete-inst-btn" title="حذف القسط" data-contract-id="${contract.id}" data-inst-index="${index}"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
+
+                detailsRow.innerHTML = `<td colspan="4"><div class="details-wrapper">${installmentsHTML}</div></td>`;
+                tableBody.appendChild(detailsRow);
+            });
+        }
+
+        tableBody.addEventListener('click', async (e) => {
+            const button = e.target.closest('button');
+            if (!button) {
+                 const expandCell = e.target.closest('.expand-cell');
+                 if(expandCell) {
+                    const contractRow = expandCell.closest('.contract-row');
+                    const cId = contractRow.dataset.contractId;
+                    const detailsRow = tableBody.querySelector(`.details-container-row[data-details-for="${cId}"]`);
+                    const expandBtn = contractRow.querySelector('.expand-btn');
+                    const isHidden = detailsRow.style.display === 'none';
+                    detailsRow.style.display = isHidden ? 'table-row' : 'none';
+                    expandBtn.innerHTML = isHidden ? 'إخفاء &uarr;' : 'عرض &darr;';
+                    contractRow.classList.toggle('active', isHidden);
+                 }
+                 return;
+            }
+
+            const contractId = button.dataset.contractId;
+            const instIndexStr = button.dataset.instIndex;
+
+            if (button.classList.contains('expand-btn')) {
+                const contractRow = button.closest('.contract-row');
+                const cId = contractRow.dataset.contractId;
+                const detailsRow = tableBody.querySelector(`.details-container-row[data-details-for="${cId}"]`);
+                const isHidden = detailsRow.style.display === 'none';
+                detailsRow.style.display = isHidden ? 'table-row' : 'none';
+                button.innerHTML = isHidden ? 'إخفاء &uarr;' : 'عرض &darr;';
+                contractRow.classList.toggle('active', isHidden);
+            } 
+            else if (button.classList.contains('save-btn')) {
+                const newStatus = button.dataset.newStatus;
+                await updateInstallment(contractId, instIndexStr, { status: newStatus }, button);
+            }
+            else if (button.classList.contains('edit-btn')) {
+                window.location.href = `/admin/installments/edit-installment?contractId=${contractId}&instIndex=${instIndexStr}`;
+            }
+            else if (button.classList.contains('delete-inst-btn')) {
+                installmentToDelete = { contractId, instIndexStr };
+                instModal.classList.add('visible');
+            }
+            else if (button.classList.contains('delete-contract-btn')) {
+                contractIdToDelete = contractId;
+                contractModal.classList.add('visible');
             }
         });
 
-        cancelDeleteBtn.addEventListener('click', hideModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                hideModal();
+        tableBody.addEventListener('change', (e) => {
+            const target = e.target;
+            if (target && target.classList.contains('status-select')) {
+                const saveBtn = target.closest('tr').querySelector('.save-btn');
+                const contractId = target.dataset.contractId;
+                const instIndex = target.dataset.instIndex;
+                const newStatus = target.value;
+                
+                saveBtn.dataset.contractId = contractId;
+                saveBtn.dataset.instIndex = instIndex;
+                saveBtn.dataset.newStatus = newStatus;
+                saveBtn.style.display = 'inline-block';
             }
         });
-
-        function attachActionListeners() {
-            accordionBody.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.onclick = function(e) {
-                    e.stopPropagation();
-                    const idToDelete = parseInt(this.dataset.id, 10);
-                    showModal(idToDelete);
-                }
-            });
-
-            accordionBody.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.onclick = function(e) {
-                    e.stopPropagation();
-                    const idToEdit = this.dataset.id;
-                    window.location.href = `/admin/installments/edit?id=${idToEdit}`;
-                }
-            });
-        }
-
-        function renderAccordion(data) {
-            accordionBody.innerHTML = '';
-            if (!data || data.length === 0) {
-                noDataMessage.style.display = 'block';
-                accordionBody.style.display = 'none';
+        
+        async function updateInstallment(contractId, instIndexStr, newValues, button) {
+            if (!contractId || !instIndexStr) {
+                console.error("Missing contractId or instIndexStr");
+                if(button) button.textContent = 'خطأ فادح';
                 return;
             }
-            noDataMessage.style.display = 'none';
-            accordionBody.style.display = 'block';
 
-            data.forEach(record => {
-                // Defensive coding: Check if core properties exist before using them
-                const customerName = record.customerName || 'بيانات غير متوفرة';
-                const customerPhone = record.customerPhone || '-';
-                const totalAmount = record.totalAmount || 0;
-                const type = record.type || 'غير محدد';
-                const location = record.location || 'غير محدد';
-                const notes = record.notes || '';
-                const installments = record.installments || [];
-
-                const status = getOverallStatus(installments);
-                const remainingInstallments = installments.filter(inst => inst.status === 'pending').length;
-                const totalInstallments = installments.length;
-
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'accordion-item';
-                accordionItem.dataset.id = record.id;
-
-                let installmentsHtml = '';
-                if (installments.length > 0) {
-                    installments.forEach((inst, index) => {
-                        const instStatus = inst.status === 'paid' ? { text: 'مدفوع', className: 'status-paid' } : { text: 'مستحق', className: 'status-pending' };
-                        installmentsHtml += `
-                            <div class="inst-row">
-                                <span>القسط ${index + 1}</span>
-                                <span>${parseFloat(inst.amount || 0).toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</span>
-                                <span>${inst.dueDate || '-'}</span>
-                                <span><span class="status-badge ${instStatus.className}">${instStatus.text}</span></span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    installmentsHtml = '<div class="no-installments-info">لا توجد أقساط مجدولة لهذا العميل.</div>';
-                }
-
-                accordionItem.innerHTML = `
-                    <button class="accordion-trigger">
-                        <div class="trigger-left">
-                            <span class="customer-name">${customerName}</span>
-                            <span class="customer-phone">${customerPhone}</span>
-                        </div>
-                        <div class="trigger-right">
-                            <span class="status-badge ${status.className}">${status.text}</span>
-                            <span class="trigger-icon"></span>
-                        </div>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="content-inner">
-                            <div class="details-container">
-                                <div class="detail-item"><strong>النوع:</strong><span>${type}</span></div>
-                                <div class="detail-item"><strong>الموقع:</strong><span>${location}</span></div>
-                                <div class="detail-item"><strong>المبلغ الإجمالي:</strong><span>${parseFloat(totalAmount).toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</span></div>
-                                <div class="detail-item"><strong>الأقساط المتبقية:</strong><span>${remainingInstallments} / ${totalInstallments}</span></div>
-                            </div>
-                            ${notes ? `<div class="notes-section"><h4>ملاحظات</h4><p>${notes}</p></div>` : ''}
-                            <div class="installments-section">
-                                <h4>جدول الأقساط</h4>
-                                <div class="inst-header">
-                                    <span>الدفعة</span><span>المبلغ</span><span>تاريخ الاستحقاق</span><span>الحالة</span>
-                                </div>
-                                <div class="inst-body">${installmentsHtml}</div>
-                            </div>
-                            <div class="actions">
-                                <button class="action-btn edit-btn" data-id="${record.id}" title="تعديل"><i class="fas fa-edit"></i> تعديل</button>
-                                <button class="action-btn delete-btn" data-id="${record.id}" title="حذف"><i class="fas fa-trash-alt"></i> حذف</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                accordionBody.appendChild(accordionItem);
-            });
-            attachActionListeners();
-        }
-        
-        accordionBody.addEventListener('click', function(event) {
-            const trigger = event.target.closest('.accordion-trigger');
-            if (trigger) {
-                const currentItem = trigger.parentElement;
-                const content = trigger.nextElementSibling;
-                const isOpening = !currentItem.classList.contains('active');
-
-                this.querySelectorAll('.accordion-item.active').forEach(item => {
-                    if (item !== currentItem) {
-                        item.classList.remove('active');
-                        item.querySelector('.accordion-content').style.maxHeight = null;
-                    }
-                });
-
-                if (isOpening) {
-                    currentItem.classList.add('active');
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                } else {
-                    currentItem.classList.remove('active');
-                    content.style.maxHeight = null;
-                }
+            if(button) {
+                button.textContent = 'جاري...';
+                button.disabled = true;
             }
-        });
-
-        function loadData() {
             try {
-                const rawData = localStorage.getItem('installmentsData');
-                const data = rawData ? JSON.parse(rawData) : [];
-                allInstallments = Array.isArray(data) ? data.sort((a, b) => (b.id || 0) - (a.id || 0)) : [];
-                renderAccordion(allInstallments);
+                const instIndex = parseInt(instIndexStr, 10);
+                if (isNaN(instIndex)) throw new Error("Invalid installment index");
+
+                const contractRef = doc(db, "installments", contractId);
+                const contractSnap = await getDoc(contractRef);
+
+                if (contractSnap.exists()) {
+                    const contractData = contractSnap.data();
+                    const updatedInstallments = [...contractData.installments];
+                    const instToUpdate = updatedInstallments[instIndex];
+
+                    if(instToUpdate) {
+                        updatedInstallments[instIndex] = { ...instToUpdate, ...newValues };
+                        await updateDoc(contractRef, { installments: updatedInstallments });
+                        if(button) {
+                           button.textContent = 'حفظ';
+                           button.style.display = 'none';
+                        }
+                    } else { throw new Error('Installment not found at index ' + instIndex); }
+                } else { throw new Error('Contract not found'); }
             } catch (error) {
-                console.error('CRITICAL ERROR loading data. The data might be corrupted.', error);
-                allInstallments = [];
-                renderAccordion(allInstallments); 
+                 console.error("Error updating: ", error);
+                 if(button) button.textContent = 'خطأ';
+                 alert('فشل التحديث. الرجاء المحاولة مرة أخرى.');
+            } finally {
+                if(button) button.disabled = false;
             }
         }
 
-        loadData();
+        async function deleteInstallment() {
+            if (!installmentToDelete) return;
+            const { contractId, instIndexStr } = installmentToDelete;
+            const instIndex = parseInt(instIndexStr, 10);
+
+            if (isNaN(instIndex)) {
+                console.error("Invalid index for deletion");
+                instModal.classList.remove('visible');
+                return;
+            }
+
+            confirmInstDeleteBtn.disabled = true;
+
+            try {
+                 const contractRef = doc(db, "installments", contractId);
+                 const contractSnap = await getDoc(contractRef);
+                 if (contractSnap.exists()) {
+                    let installments = contractSnap.data().installments || [];
+                    installments.splice(instIndex, 1);
+                    await updateDoc(contractRef, { installments: installments });
+                    await loadContracts();
+                 }
+            } catch (error) {
+                console.error("Error deleting installment: ", error);
+                alert("فشل حذف القسط.");
+            } finally {
+                instModal.classList.remove('visible');
+                confirmInstDeleteBtn.disabled = false;
+                installmentToDelete = null;
+            }
+        }
+
+        async function deleteContract() {
+            if (!contractIdToDelete) return;
+            confirmContractDeleteBtn.disabled = true;
+
+            try {
+                await deleteDoc(doc(db, "installments", contractIdToDelete));
+                await loadContracts();
+            } catch (error) {
+                 console.error("Error deleting contract: ", error);
+                 alert("فشل حذف العقد.");
+            } finally {
+                contractModal.classList.remove('visible');
+                confirmContractDeleteBtn.disabled = false;
+                contractIdToDelete = null;
+            }
+        }
+
+        confirmInstDeleteBtn.addEventListener('click', deleteInstallment);
+        cancelInstDeleteBtn.addEventListener('click', () => instModal.classList.remove('visible'));
+        instModal.addEventListener('click', (e) => e.target === instModal && instModal.classList.remove('visible'));
+
+        confirmContractDeleteBtn.addEventListener('click', deleteContract);
+        cancelContractDeleteBtn.addEventListener('click', () => contractModal.classList.remove('visible'));
+        contractModal.addEventListener('click', (e) => e.target === contractModal && contractModal.classList.remove('visible'));
+
+        loadContracts();
     });
 </script>
 
-<style>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-
+<style is:global>
 :root {
-    --page-bg: #f0f2f5;
+    --page-bg: #f7f8fa;
     --card-bg: #ffffff;
     --primary-accent: #6d28d9;
-    --secondary-accent: #0891b2;
+    --danger-text: #dc2626;
     --text-primary: #111827;
     --text-secondary: #6b7280;
     --border-color: #e5e7eb;
-    --status-paid-bg: #dcfce7; 
-    --status-paid-text: #166534;
-    --status-pending-bg: #fee2e2;
-    --status-pending-text: #991b1b;
-    --status-partial-bg: #ffedd5;
-    --status-partial-text: #9a3412;
-    --danger-bg: #fee2e2;
-    --danger-text: #b91c1c;
-    --danger-hover-bg: #fecaca;
+    --success-color: #10b981;
+    --active-row-bg: #f5f3ff;
 }
 
-.installments-main { min-height: 100vh; background-color: var(--page-bg); display: flex; justify-content: center; align-items: flex-start; padding: 3rem 2rem; font-family: 'Cairo', sans-serif; direction: rtl; }
-.installments-container { width: 100%; max-width: 800px; }
+.dashboard-main { background-color: var(--page-bg); min-height: 100vh; direction: rtl; }
+.dashboard-container { max-width: 1300px; margin: auto; padding: 2rem; }
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.header-title h1 { font-size: 2rem; font-weight: 700; }
+.header-title p { color: var(--text-secondary); }
+.new-contract-btn { background-color: var(--primary-accent); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
 
-.installments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-.header-title h1 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0; }
-.back-link { color: var(--primary-accent); text-decoration: none; font-weight: 600; font-size: 1rem; }
+.table-container { background-color: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+.contracts-table { width: 100%; border-collapse: collapse; }
+.contracts-table th, .contracts-table td { padding: 1rem 1.25rem; text-align: right; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+.contracts-table thead th { background-color: #f9fafb; font-size: 0.9rem; color: var(--text-secondary); font-weight: 600; }
 
-.installments-content { background-color: transparent; border-radius: 16px; margin-top: 1.5rem; }
+.contract-row { transition: background-color 0.2s; }
+.contract-row:not(.active):hover { background-color: #fafafa; }
+.contract-row.active { background-color: var(--active-row-bg); }
+.expand-cell { cursor: pointer; }
+.customer-name { font-weight: 600; color: var(--text-primary); }
+.customer-phone { font-size: 0.9rem; color: var(--text-secondary); }
 
-.accordion-list { display: flex; flex-direction: column; gap: 1rem; }
-.accordion-item { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; transition: all 0.4s ease; }
-.accordion-item.removing { opacity: 0; transform: scale(0.95); margin-top: -80px; padding-top: 0; padding-bottom: 0; z-index: -1; }
-.accordion-item.active { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.contract-actions { display: flex; align-items: center; gap: 0.75rem; }
+.expand-btn { background: none; border: 1px solid var(--border-color); color: var(--text-secondary); font-weight: 600; border-radius: 6px; padding: 0.4rem 0.8rem; cursor: pointer; }
+.contract-row.active .expand-btn { background-color: var(--primary-accent); color: white; border-color: var(--primary-accent); }
 
-.accordion-trigger { background: transparent; border: none; width: 100%; text-align: right; padding: 1.25rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.trigger-left { display: flex; flex-direction: column; align-items: flex-start; }
-.customer-name { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
-.customer-phone { font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.1rem; }
-.trigger-right { display: flex; align-items: center; gap: 1rem; }
-.trigger-icon { width: 1.25rem; height: 1.25rem; transition: transform 0.3s ease; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='3' stroke='%239ca3af'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3e%3c/svg%3e"); background-size: contain; background-repeat: no-repeat; background-position: center; }
-.accordion-item.active .trigger-icon { transform: rotate(-180deg); }
+.details-container-row td { padding: 0; background-color: #fafbff; }
+.details-wrapper { padding: 1rem; border-top: 2px solid var(--primary-accent); }
+.details-wrapper > p { padding: 1rem; text-align: center; color: var(--text-secondary); }
 
-.accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; background-color: #f9fafb; }
-.content-inner { padding: 0.5rem 1.5rem 1.5rem; border-top: 1px solid var(--border-color); }
+.nested-table { width: 100%; border-collapse: collapse; }
+.nested-table th, .nested-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #eef2ff; text-align: right; vertical-align: middle; }
+.nested-table thead th { font-size: 0.85rem; background: transparent; }
+.nested-table tbody tr:last-child td { border-bottom: none; }
 
-.details-container { display: flex; flex-wrap: wrap; gap: 1rem 2rem; padding: 1.5rem 0; }
-.detail-item { display: flex; flex-direction: column; flex: 1 1 180px; }
-.detail-item strong { color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
-.detail-item span { color: var(--text-primary); font-weight: 600; font-size: 1rem; }
+.status-select { padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color); background-color: white; font-family: inherit; font-weight: 600; width: 120px; }
+.status-select:focus { border-color: var(--primary-accent); outline: none; }
 
-.status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; font-size: 0.8rem; }
-.status-paid { background-color: var(--status-paid-bg); color: var(--status-paid-text); }
-.status-pending { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
-.status-partial { background-color: var(--status-partial-bg); color: var(--status-partial-text); }
+.actions-cell { display: flex; align-items: center; gap: 0.5rem; }
+.save-btn { background-color: var(--success-color); color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background-color 0.2s; white-space: nowrap; }
+.save-btn:hover { background-color: #059669; }
+.save-btn:disabled { background-color: #6ee7b7; cursor: not-allowed; }
 
-h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 1rem 0; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); }
+.action-btn { background: transparent; border: none; cursor: pointer; color: var(--text-secondary); padding: 0.25rem; transition: color 0.2s; }
+.action-btn:hover { color: var(--text-primary); }
+.edit-btn:hover { color: #2563eb; }
+.delete-inst-btn:hover, .delete-contract-btn:hover { color: var(--danger-text); }
 
-.notes-section p { font-size: 0.95rem; color: #374151; line-height: 1.6; background: #f0f2f5; padding: 0.75rem 1rem; border-radius: 8px; }
+.loading-indicator, .no-data-message { display: flex; justify-content: center; align-items: center; padding: 3rem; gap: 1rem; flex-direction: column; color: var(--text-secondary); }
+.spinner { width: 28px; height: 28px; border: 3px solid #e5e7eb; border-top-color: var(--primary-accent); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.inst-header, .inst-row { display: grid; grid-template-columns: 1fr 1.5fr 1.5fr 1fr; gap: 1rem; padding: 0.75rem; text-align: right; }
-.inst-header { font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; text-transform: uppercase; }
-.inst-body { border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); }
-.inst-row { border-bottom: 1px solid var(--border-color); }
-.inst-row:last-child { border-bottom: none; }
-.no-installments-info { padding: 2rem; text-align: center; color: var(--text-secondary); }
-
-.actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; justify-content: flex-end; }
-.action-btn { font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 0.5rem; }
-.edit-btn { background-color: var(--status-partial-bg); color: var(--status-partial-text); }
-.edit-btn:hover { background-color: #fed7aa; }
-.delete-btn { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
-.delete-btn:hover { background-color: #fecaca; }
-
-.no-data-message { padding: 4rem 2rem; text-align: center; color: var(--text-secondary); font-size: 1.1rem; display: none; }
-
-/* Modal Styles */
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
 .modal-overlay.visible { opacity: 1; visibility: visible; }
-.modal-content { background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease; }
+.modal-content { background: var(--card-bg); padding: 2rem; border-radius: 12px; width: 90%; max-width: 450px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease; }
 .modal-overlay.visible .modal-content { transform: scale(1); }
-.modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; }
-.modal-text { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+.modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+.modal-text { font-size: 1rem; color: var(--text-secondary); margin-bottom: 1rem; }
+.modal-text-danger { font-size: 1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+.modal-text-danger b { color: var(--danger-text); font-weight: 800; }
 .modal-actions { display: flex; justify-content: center; gap: 1rem; }
-.modal-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
-.confirm-btn { background-color: var(--danger-bg); color: var(--danger-text); }
-.confirm-btn:hover { background-color: var(--danger-hover-bg); }
+.modal-btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.confirm-btn { background-color: var(--danger-text); color: white; }
+.confirm-btn:hover:not(:disabled) { background-color: #b91c1c; }
 .cancel-btn { background-color: var(--border-color); color: var(--text-primary); }
-.cancel-btn:hover { background-color: #d1d5db; }
+
 </style>

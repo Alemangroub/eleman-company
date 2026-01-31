@@ -1,0 +1,222 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+--- 
+
+<Layout title="تعديل القسط - المدير العام" showNavigation={false}>
+    <main class="edit-installment-main">
+        <div class="form-card">
+            <header class="form-header">
+                <h1>تعديل القسط</h1>
+                <p>قم بتحديث بيانات القسط أدناه.</p>
+            </header>
+
+            <div id="loading-indicator" class="loading-indicator">
+                <div class="spinner"></div>
+                <p>جاري تحميل بيانات القسط...</p>
+            </div>
+
+            <form id="edit-installment-form" style="display: none;">
+                <div class="form-group">
+                    <label for="amount">مبلغ القسط</label>
+                    <input type="number" id="amount" name="amount" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dueDate">تاريخ الاستحقاق</label>
+                    <input type="date" id="dueDate" name="dueDate" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="save-btn" class="save-btn">حفظ التعديلات</button>
+                    <a href="/admin/installments/list" class="cancel-link">إلغاء</a>
+                </div>
+            </form>
+             <div id="error-message" class="error-message" style="display: none;"></div>
+        </div>
+    </main>
+</Layout>
+
+<script>
+    import { db } from '../../../lib/firebase';
+    import { doc, getDoc, updateDoc } from "firebase/firestore";
+
+    if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
+        window.location.href = '/admin';
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        const form = document.getElementById('edit-installment-form');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const saveBtn = document.getElementById('save-btn');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const contractId = urlParams.get('contractId');
+        const instIndex = parseInt(urlParams.get('instIndex'), 10);
+
+        if (!contractId || isNaN(instIndex)) {
+            loadingIndicator.style.display = 'none';
+            errorMessage.textContent = 'بيانات القسط غير صالحة. الرجاء العودة والمحاولة مرة أخرى.';
+            errorMessage.style.display = 'block';
+            return;
+        }
+
+        const contractRef = doc(db, "installments", contractId);
+        let contractData = null;
+
+        try {
+            const contractSnap = await getDoc(contractRef);
+            if (contractSnap.exists()) {
+                contractData = contractSnap.data();
+                const installment = contractData.installments[instIndex];
+
+                if (installment) {
+                    // Populate the form
+                    document.getElementById('amount').value = installment.amount;
+                    // Format date for the input field (YYYY-MM-DD)
+                    document.getElementById('dueDate').value = new Date(installment.dueDate).toISOString().split('T')[0];
+                    
+                    loadingIndicator.style.display = 'none';
+                    form.style.display = 'block';
+                } else {
+                    throw new Error('القسط المحدد غير موجود.');
+                }
+            } else {
+                throw new Error('العقد المحدد غير موجود.');
+            }
+        } catch (error) {
+            console.error("Error loading installment: ", error);
+            loadingIndicator.style.display = 'none';
+            errorMessage.textContent = `فشل تحميل البيانات: ${error.message}`;
+            errorMessage.style.display = 'block';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'جاري الحفظ...';
+
+            try {
+                const updatedAmount = parseFloat(document.getElementById('amount').value);
+                const updatedDueDate = document.getElementById('dueDate').value;
+
+                const updatedInstallments = [...contractData.installments];
+                updatedInstallments[instIndex] = {
+                    ...updatedInstallments[instIndex], // Keep status and other properties
+                    amount: updatedAmount,
+                    dueDate: updatedDueDate
+                };
+
+                await updateDoc(contractRef, { installments: updatedInstallments });
+                
+                alert('تم تحديث القسط بنجاح!');
+                window.location.href = '/admin/installments/list';
+
+            } catch (error) {
+                console.error("Error updating installment: ", error);
+                errorMessage.textContent = 'فشل حفظ التعديلات. الرجاء المحاولة مرة أخرى.';
+                errorMessage.style.display = 'block';
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'حفظ التعديلات';
+            }
+        });
+    });
+</script>
+
+<style is:global>
+:root {
+    --page-bg: #f7f8fa;
+    --card-bg: #ffffff;
+    --primary-accent: #6d28d9;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --danger-color: #dc2626;
+}
+.edit-installment-main { 
+    background-color: var(--page-bg);
+    min-height: 100vh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    direction: rtl;
+    padding: 2rem;
+}
+.form-card { 
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+}
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.form-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
+.form-header p { color: var(--text-secondary); }
+
+.form-group { margin-bottom: 1.5rem; }
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+.form-group input:focus { 
+    outline: none; 
+    border-color: var(--primary-accent); 
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+}
+
+.form-actions { 
+    margin-top: 2rem; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.75rem; 
+}
+.save-btn {
+    background-color: var(--primary-accent);
+    color: white;
+    padding: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.save-btn:hover:not(:disabled) { background-color: #5b21b6; }
+.save-btn:disabled { background-color: #c4b5fd; cursor: not-allowed; }
+
+.cancel-link {
+    text-align: center;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem;
+}
+.cancel-link:hover { color: var(--text-primary); }
+
+.loading-indicator { text-align: center; color: var(--text-secondary); }
+.spinner { margin: 0 auto 1rem; width: 28px; height: 28px; border: 3px solid #e5e7eb; border-top-color: var(--primary-accent); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-message { 
+    background-color: #fee2e2; 
+    color: #b91c1c; 
+    padding: 1rem; 
+    border-radius: 8px; 
+    text-align: center; 
+    font-weight: 600;
+    margin-top: 1rem;
+}
+</style>
