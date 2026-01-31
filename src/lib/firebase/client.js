@@ -1,8 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+// src/lib/firebase/client.js
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration.
+// This is safe to expose on the client side.
 const firebaseConfig = {
   apiKey: "AIzaSyAIPUR1qFzLbNi---_qDQa11fpIB6yRyFo",
   authDomain: "elemancompany-2b00c.firebaseapp.com",
@@ -13,10 +14,8 @@ const firebaseConfig = {
   measurementId: "G-QF3C2TBTBS"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize Cloud Firestore and get a reference to the service
+// Initialize Firebase for the client, only if it hasn't been initialized yet.
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 
 export { db };

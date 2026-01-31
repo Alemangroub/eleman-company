@@ -64,7 +64,7 @@ import Layout from '../../../layouts/Layout.astro';
 </Layout>
 
 <script>
-    import { db } from '../../../lib/firebase';
+    import { db } from '../../../lib/firebase/client.js';
     import { collection, getDocs, doc, getDoc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore";
 
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
@@ -108,6 +108,9 @@ import Layout from '../../../layouts/Layout.astro';
 
                 renderContracts(contracts);
                 table.style.display = 'table';
+                
+                // ** NEW: Check for hash after rendering **
+                highlightContractFromUrl();
 
             } catch (error) {
                 console.error("Error loading contracts: ", error);
@@ -175,6 +178,34 @@ import Layout from '../../../layouts/Layout.astro';
                 tableBody.appendChild(detailsRow);
             });
         }
+        
+        // ** NEW: Function to handle hash changes and highlight **
+        function highlightContractFromUrl() {
+            const contractId = window.location.hash.substring(1);
+            if (!contractId) return;
+
+            const contractRow = tableBody.querySelector(`.contract-row[data-contract-id="${contractId}"]`);
+            if (contractRow) {
+                const detailsRow = tableBody.querySelector(`.details-container-row[data-details-for="${contractId}"]`);
+                const expandBtn = contractRow.querySelector('.expand-btn');
+
+                // Expand the details view if it's not already open
+                if (detailsRow && detailsRow.style.display === 'none') {
+                    detailsRow.style.display = 'table-row';
+                    expandBtn.innerHTML = 'إخفاء &uarr;';
+                    contractRow.classList.add('active');
+                }
+
+                // Scroll and highlight
+                setTimeout(() => { // Use timeout to allow rendering before scrolling
+                    contractRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    contractRow.classList.add('highlight');
+                    setTimeout(() => {
+                        contractRow.classList.remove('highlight');
+                    }, 2500); // Highlight for 2.5 seconds
+                }, 100);
+            }
+        }
 
         tableBody.addEventListener('click', async (e) => {
             const button = e.target.closest('button');
@@ -226,48 +257,31 @@ import Layout from '../../../layouts/Layout.astro';
             const target = e.target;
             if (target && target.classList.contains('status-select')) {
                 const saveBtn = target.closest('tr').querySelector('.save-btn');
-                const contractId = target.dataset.contractId;
-                const instIndex = target.dataset.instIndex;
-                const newStatus = target.value;
-                
-                saveBtn.dataset.contractId = contractId;
-                saveBtn.dataset.instIndex = instIndex;
-                saveBtn.dataset.newStatus = newStatus;
+                saveBtn.dataset.contractId = target.dataset.contractId;
+                saveBtn.dataset.instIndex = target.dataset.instIndex;
+                saveBtn.dataset.newStatus = target.value;
                 saveBtn.style.display = 'inline-block';
             }
         });
         
         async function updateInstallment(contractId, instIndexStr, newValues, button) {
-            if (!contractId || !instIndexStr) {
-                console.error("Missing contractId or instIndexStr");
-                if(button) button.textContent = 'خطأ فادح';
-                return;
-            }
-
             if(button) {
                 button.textContent = 'جاري...';
                 button.disabled = true;
             }
             try {
                 const instIndex = parseInt(instIndexStr, 10);
-                if (isNaN(instIndex)) throw new Error("Invalid installment index");
-
                 const contractRef = doc(db, "installments", contractId);
                 const contractSnap = await getDoc(contractRef);
-
                 if (contractSnap.exists()) {
                     const contractData = contractSnap.data();
                     const updatedInstallments = [...contractData.installments];
-                    const instToUpdate = updatedInstallments[instIndex];
-
-                    if(instToUpdate) {
-                        updatedInstallments[instIndex] = { ...instToUpdate, ...newValues };
-                        await updateDoc(contractRef, { installments: updatedInstallments });
-                        if(button) {
-                           button.textContent = 'حفظ';
-                           button.style.display = 'none';
-                        }
-                    } else { throw new Error('Installment not found at index ' + instIndex); }
+                    updatedInstallments[instIndex] = { ...updatedInstallments[instIndex], ...newValues };
+                    await updateDoc(contractRef, { installments: updatedInstallments });
+                    if(button) {
+                       button.textContent = 'حفظ';
+                       button.style.display = 'none';
+                    }
                 } else { throw new Error('Contract not found'); }
             } catch (error) {
                  console.error("Error updating: ", error);
@@ -282,12 +296,6 @@ import Layout from '../../../layouts/Layout.astro';
             if (!installmentToDelete) return;
             const { contractId, instIndexStr } = installmentToDelete;
             const instIndex = parseInt(instIndexStr, 10);
-
-            if (isNaN(instIndex)) {
-                console.error("Invalid index for deletion");
-                instModal.classList.remove('visible');
-                return;
-            }
 
             confirmInstDeleteBtn.disabled = true;
 
@@ -335,6 +343,7 @@ import Layout from '../../../layouts/Layout.astro';
         cancelContractDeleteBtn.addEventListener('click', () => contractModal.classList.remove('visible'));
         contractModal.addEventListener('click', (e) => e.target === contractModal && contractModal.classList.remove('visible'));
 
+        // Initial load
         loadContracts();
     });
 </script>
@@ -350,6 +359,7 @@ import Layout from '../../../layouts/Layout.astro';
     --border-color: #e5e7eb;
     --success-color: #10b981;
     --active-row-bg: #f5f3ff;
+    --highlight-bg: #e0e7ff; /* Added for highlighting */
 }
 
 .dashboard-main { background-color: var(--page-bg); min-height: 100vh; direction: rtl; }
@@ -364,7 +374,13 @@ import Layout from '../../../layouts/Layout.astro';
 .contracts-table th, .contracts-table td { padding: 1rem 1.25rem; text-align: right; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
 .contracts-table thead th { background-color: #f9fafb; font-size: 0.9rem; color: var(--text-secondary); font-weight: 600; }
 
-.contract-row { transition: background-color 0.2s; }
+.contract-row {
+    transition: background-color 0.5s ease;
+}
+.contract-row.highlight {
+    background-color: var(--highlight-bg);
+}
+
 .contract-row:not(.active):hover { background-color: #fafafa; }
 .contract-row.active { background-color: var(--active-row-bg); }
 .expand-cell { cursor: pointer; }

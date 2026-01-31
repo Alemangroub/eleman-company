@@ -37,7 +37,7 @@ import Layout from '../../../layouts/Layout.astro';
 </Layout>
 
 <script>
-    import { db } from '../../../lib/firebase';
+    import { db } from '../../../lib/firebase/client';
     import { doc, getDoc, updateDoc } from "firebase/firestore";
 
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {

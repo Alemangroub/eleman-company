@@ -1,5 +1,50 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { db } from "../../lib/firebase/server.js";
+import { getDocs, collection, query, orderBy } from "firebase/firestore";
+
+let upcomingInstallments = [];
+let error = null;
+
+try {
+    const q = query(collection(db, "installments"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    const allContracts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const nextSevenDays = new Date();
+    nextSevenDays.setDate(today.getDate() + 7);
+    nextSevenDays.setHours(23, 59, 59, 999);
+
+    const alerts = [];
+    allContracts.forEach(contract => {
+        if (contract.installments && Array.isArray(contract.installments)) {
+            contract.installments.forEach((inst, index) => {
+                if (inst.dueDate && inst.status === 'pending') {
+                    const dueDate = new Date(inst.dueDate);
+                    if (dueDate >= today && dueDate <= nextSevenDays) {
+                        alerts.push({
+                            ...inst,
+                            customerName: contract.customerName,
+                            customerPhone: contract.customerPhone,
+                            contractId: contract.id,
+                            instIndex: index,
+                            unitType: contract.type,
+                            unitLocation: contract.location
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+    upcomingInstallments = alerts.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+} catch (e) {
+    error = e.message;
+    console.error("Error fetching or processing installments for dashboard: ", e);
+}
 ---
 
 <Layout title="لوحة التحكم - المدير العام" showNavigation={false}>
@@ -10,8 +55,48 @@ import Layout from '../../layouts/Layout.astro';
                 <p>مرحباً بك، استعرض وأدِر الأقسام المختلفة من هنا.</p>
             </header>
 
+            <section class="alerts-section">
+                <div class="alerts-section-header">
+                    <h2><i class="fa-solid fa-bell"></i> تنبيهات الأقساط القادمة</h2>
+                    {!error && upcomingInstallments.length > 0 && (
+                         <button id="toggle-alerts-btn" class="toggle-alerts-btn" type="button">
+                            <span>لديك <b>{upcomingInstallments.length}</b> أقساط مستحقة</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                    )}
+                </div>
+
+                {error && <p class="error-message">خطأ في تحميل التنبيهات: {error}</p>}
+
+                {!error && upcomingInstallments.length === 0 && (
+                    <p class="no-alerts">لا توجد أقساط مستحقة خلال الأيام السبعة القادمة.</p>
+                )}
+
+                {!error && upcomingInstallments.length > 0 && (
+                    <div id="alerts-container" class="collapsible-content">
+                        <div class="alerts-grid">
+                            {upcomingInstallments.map(installment => (
+                                <div class="alert-card">
+                                    <div class="alert-header">
+                                         <a href={`/admin/installments/list#${installment.contractId}`} class="customer-name-link">
+                                            {installment.customerName}
+                                        </a>
+                                        <p class="unit-info">{installment.unitType} - {installment.unitLocation}</p>
+                                        <p class="due-date"><i class="fa-solid fa-calendar-days"></i> {new Date(installment.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                    </div>
+                                    <div class="alert-body">
+                                        <span class="amount">المبلغ: {installment.amount.toLocaleString('ar-EG', { style: 'currency', currency: 'EGP' })}</span>
+                                        <a href={`tel:${installment.customerPhone}`} class="phone-link">{installment.customerPhone}</a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </section>
+
             <section class="dashboard-actions">
-                <a href="/admin/installments" class="action-card">
+                <a href="/admin/installments/list" class="action-card">
                     <div class="card-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt-text"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M14 8H8"/><path d="M16 12H8"/><path d="M12 16H8"/></svg>
                     </div>
@@ -19,7 +104,7 @@ import Layout from '../../layouts/Layout.astro';
                     <p>عرض وتحديث وإضافة أقساط العملاء.</p>
                 </a>
 
-                <a href="/" class="logout-button">
+                <a href="#" class="logout-button">
                     تسجيل الخروج
                 </a>
             </section>
@@ -28,105 +113,77 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <script is:inline>
-    // Simple client-side auth check
     if (sessionStorage.getItem('isAdminLoggedIn') !== 'true') {
         window.location.href = '/admin';
     }
 
     const logoutButton = document.querySelector('.logout-button');
-    logoutButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        sessionStorage.removeItem('isAdminLoggedIn');
-        window.location.href = '/admin';
-    });
+    if(logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            sessionStorage.removeItem('isAdminLoggedIn');
+            window.location.href = '/admin';
+        });
+    }
+
+    const toggleBtn = document.getElementById('toggle-alerts-btn');
+    const alertsContainer = document.getElementById('alerts-container');
+    if (toggleBtn && alertsContainer) {
+        alertsContainer.classList.remove('expanded');
+        toggleBtn.classList.remove('active');
+
+        toggleBtn.addEventListener('click', () => {
+            const isExpanded = alertsContainer.classList.toggle('expanded');
+            toggleBtn.classList.toggle('active', isExpanded);
+        });
+    }
 </script>
 
 <style>
-    .dashboard-main {
-        min-height: 100vh;
-        background-color: #f0f4f8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 2rem;
-        font-family: 'Cairo', sans-serif;
-    }
-
-    .dashboard-container {
-        width: 100%;
-        max-width: 900px;
-        text-align: center;
-    }
-
-    .dashboard-header {
-        margin-bottom: 3rem;
-    }
-
-    .dashboard-header h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: var(--text-dark);
-    }
-
-    .dashboard-header p {
-        font-size: 1.2rem;
-        color: var(--text-muted);
-    }
-
-    .dashboard-actions {
-        display: grid;
-        gap: 2rem;
-        justify-items: center;
-    }
-
-    .action-card {
-        background: rgba(10, 10, 10, 0.75);
-        -webkit-backdrop-filter: blur(15px);
-        backdrop-filter: blur(15px);
-        border-radius: 15px;
-        padding: 2.5rem;
-        width: 100%;
-        max-width: 400px;
-        text-decoration: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .action-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-    }
-
-    .card-icon {
-        margin-bottom: 1.5rem;
-        color: white;
-    }
-
-    .action-card h2 {
-        font-size: 1.75rem;
-        margin-bottom: 0.5rem;
-        color: white;
-    }
-
-    .action-card p {
-        font-size: 1rem;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .logout-button {
-        margin-top: 2rem;
-        display: inline-block;
-        padding: 0.75rem 2rem;
-        background-color: #e53e3e;
-        color: white;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-    }
-
-    .logout-button:hover {
-        background-color: #c53030;
-    }
+:root {
+    --page-bg: #f0f2f5;
+    --card-bg: #ffffff;
+    --primary-accent: #6d28d9; 
+    --primary-accent-dark: #5b21b6;
+    --secondary-accent: #0891b2;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+}
+.dashboard-main { direction: rtl; font-family: 'Cairo', sans-serif; min-height: 100vh; background-color: var(--page-bg); padding: 2rem; }
+.dashboard-container { width: 100%; max-width: 1000px; margin: auto; }
+.dashboard-header { text-align: right; margin-bottom: 2.5rem; }
+.dashboard-header h1 { font-size: 2.25rem; font-weight: 800; color: var(--text-primary); }
+.dashboard-header p { font-size: 1.1rem; color: var(--text-secondary); }
+.alerts-section { background: var(--card-bg); padding: 2rem; border-radius: 12px; margin-bottom: 2.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+.alerts-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.alerts-section h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.75rem; margin: 0; }
+.alerts-section h2 i { color: #f59e0b; }
+.no-alerts, .error-message { text-align: center; padding: 2rem 1rem; background: #f9fafb; border-radius: 8px; color: var(--text-secondary); font-weight: 500; margin-top: 1rem;}
+.error-message { background-color: #fee2e2; color: #b91c1c; }
+.toggle-alerts-btn { display: flex; align-items: center; gap: 0.5rem; background-color: var(--primary-accent); color: white; border: none; border-radius: 20px; padding: 0.5rem 1rem; font-family: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+.toggle-alerts-btn:hover { background-color: var(--primary-accent-dark); box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3); }
+.toggle-alerts-btn span b { background-color: white; color: var(--primary-accent); border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; margin-right: 0.5rem; }
+.arrow-icon { transition: transform 0.3s ease; }
+.toggle-alerts-btn.active .arrow-icon { transform: rotate(180deg); }
+.collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out, padding-top 0s ease; }
+.collapsible-content.expanded { max-height: 1000px; padding-top: 1.5rem; transition: max-height 0.5s ease-in, padding-top 0.5s ease; }
+.alerts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+.alert-card { background: var(--page-bg); border: 1px solid #e5e7eb; border-radius: 10px; padding: 1.25rem; text-align: right; }
+.alert-header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+.customer-name-link { font-weight: 800; color: var(--primary-accent); text-decoration: none; transition: color 0.2s ease; font-size: 1.1rem; }
+.customer-name-link:hover { color: var(--primary-accent-dark); text-decoration: underline; }
+.unit-info { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+.due-date { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; margin: 0; display: flex; align-items: center; gap: 0.4rem; }
+.due-date i { color: #9ca3af; }
+.alert-body { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; }
+.amount { font-weight: 600; color: var(--secondary-accent); }
+.phone-link { color: var(--primary-accent); text-decoration: none; font-weight: 600; direction: ltr; text-align: left; }
+.dashboard-actions { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+.action-card { background-color: var(--card-bg); border-radius: 12px; padding: 2rem; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.2s, box-shadow 0.2s; text-align: right; }
+.action-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.card-icon { margin-bottom: 1rem; color: var(--primary-accent); }
+.action-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+.action-card p { font-size: 1rem; color: var(--text-secondary); }
+.logout-button { margin-top: 1rem; justify-self: center; padding: 0.7rem 2.5rem; background-color: #ef4444; color: white; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background-color 0.3s ease; }
+.logout-button:hover { background-color: #dc2626; }
 </style>
